@@ -13,16 +13,22 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/theme.css">
   <link rel="stylesheet" href="assets/css/premium.css">
+  <link rel="stylesheet" href="assets/css/navigation.css">
 </head>
 <body>
   <div class="announcement">Join us this Sunday · 8:00 AM & 10:30 AM <a href="#visit">Plan your visit →</a></div>
   <header class="site-header" id="top">
     <a class="brand" href="#top" aria-label="Bread of Life home"><img class="brand-logo" src="assets/images/bread-of-life-logo.png" alt="Bread of Life Divine Covenant Ministry logo"><span><b>Bread of Life</b><small>Divine Covenant Ministry</small></span></a>
-    <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button>
+    <div class="nav-meta"><span class="nav-meta-dot"></span><span><small>Next gathering</small><b>Sunday · 8:00 AM</b></span></div>
+    <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false"><span></span><span></span><em>Menu</em></button>
     <nav aria-label="Main navigation">
-      <a href="#about">About</a><a href="#sermons">Sermons</a><a href="#ministries">Ministries</a><a href="#events">Events</a><a href="#contact">Contact</a>
-      <a class="nav-give" href="#give">Give</a>
+      <div class="nav-mobile-head"><span>Explore Bread of Life</span><button class="nav-close" aria-label="Close navigation">×</button></div>
+      <div class="nav-links"><a href="#about">About</a><a href="#sermons">Messages</a><button class="explore-toggle" aria-expanded="false">Connect <span>⌄</span></button><a href="#events">Events</a><a href="#contact">Contact</a></div>
+      <div class="nav-actions"><a class="nav-visit" href="#visit"><span>⌖</span> Plan a visit</a><a class="nav-give" href="#give">Give <span>↗</span></a></div>
+      <div class="explore-menu" aria-hidden="true"><div class="explore-intro"><small>Find your place</small><h3>Life is better<br>in community.</h3><p>Take your next step and grow with people who will walk alongside you.</p></div><div class="explore-grid"><a href="#ministries"><span>01</span><b>Ministries</b><small>Find your community</small><i>↗</i></a><a href="#sermons"><span>02</span><b>Latest messages</b><small>Watch and grow</small><i>↗</i></a><a href="#events"><span>03</span><b>Upcoming events</b><small>Gather with us</small><i>↗</i></a><a href="#contact"><span>04</span><b>Prayer & care</b><small>We are here for you</small><i>↗</i></a></div></div>
+      <div class="nav-mobile-foot"><p>Jesus at the centre. People at heart.</p><a href="tel:+2348000000000">+234 800 000 0000</a></div>
     </nav>
+    <div class="nav-backdrop"></div>
   </header>
 
   <main>
@@ -106,4 +112,5 @@
   <a class="prayer-float" href="#contact"><span>♡</span> Prayer request</a><button class="to-top" aria-label="Back to top">↑</button>
   <footer><div class="footer-brand"><img class="brand-logo" src="assets/images/bread-of-life-logo.png" alt="Bread of Life logo"><span><b>Bread of Life</b><small>Divine Covenant Ministry</small></span></div><p>Jesus at the centre. People at heart.</p><div class="footer-links"><a href="#about">About</a><a href="#sermons">Sermons</a><a href="#ministries">Ministries</a><a href="#events">Events</a><a href="#give">Give</a></div><div class="copyright">© <?= date('Y') ?> Bread of Life Divine Covenant Ministry. All rights reserved. <span>Sample website—replace placeholder details before launch.</span></div></footer>
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/navigation.js"></script>
 </body></html>
