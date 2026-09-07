@@ -23,8 +23,8 @@
   <header class="site-header" id="top">
     <a class="brand" href="#top" aria-label="Bread of Life home"><img class="brand-logo" src="assets/images/bread-of-life-logo.png" alt="Bread of Life Divine Covenant Ministry logo"><span><b>Bread of Life</b><small>Divine Covenant Ministry</small></span></a>
     <div class="nav-meta"><span class="nav-meta-dot"></span><span><small>Next gathering</small><b>Sunday · 8:00 AM</b></span></div>
-    <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false"><span></span><span></span><em>Menu</em></button>
-    <nav aria-label="Main navigation">
+    <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="main-navigation"><span></span><span></span><span></span><em>Menu</em></button>
+    <nav id="main-navigation" aria-label="Main navigation">
       <div class="nav-mobile-head"><span><img src="assets/images/bread-of-life-logo.png" alt=""><span><b>Bread of Life</b><small>Divine Covenant Ministry</small></span></span><button class="nav-close" aria-label="Close navigation">×</button></div>
       <div class="nav-links"><a href="#about">About</a><a href="#sermons">Messages</a><button class="explore-toggle" aria-expanded="false">Connect <span>⌄</span></button><a href="#events">Events</a><a href="#contact">Contact</a></div>
       <div class="nav-actions"><a class="nav-visit" href="#visit"><span>⌖</span> Plan a visit</a><a class="nav-give" href="#give">Give <span>↗</span></a></div>
