@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="assets/css/navigation.css">
   <link rel="stylesheet" href="assets/css/navigation-fix.css">
   <link rel="stylesheet" href="assets/css/navigation-final.css">
+  <link rel="stylesheet" href="assets/css/mobile-menu.css">
 </head>
 <body>
   <div class="announcement">Join us this Sunday · 8:00 AM & 10:30 AM <a href="#visit">Plan your visit →</a></div>
