@@ -32,5 +32,7 @@ fs.copyFileSync(path.join(root, 'assets/js/navigation.js'), path.join(dist, 'ass
 fs.copyFileSync(path.join(root, 'assets/css/theme.css'), path.join(dist, 'assets/css/theme.css'));
 fs.copyFileSync(path.join(root, 'assets/css/premium.css'), path.join(dist, 'assets/css/premium.css'));
 fs.copyFileSync(path.join(root, 'assets/css/navigation.css'), path.join(dist, 'assets/css/navigation.css'));
+fs.copyFileSync(path.join(root, 'assets/css/navigation-fix.css'), path.join(dist, 'assets/css/navigation-fix.css'));
+fs.copyFileSync(path.join(root, 'assets/css/navigation-final.css'), path.join(dist, 'assets/css/navigation-final.css'));
 fs.copyFileSync(path.join(root, 'assets/images/bread-of-life-logo.png'), path.join(dist, 'assets/images/bread-of-life-logo.png'));
 console.log('Static demo exported to dist/');
