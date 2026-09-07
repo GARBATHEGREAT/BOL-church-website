@@ -9,9 +9,10 @@
   <link rel="icon" href="assets/images/bread-of-life-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/premium.css">
 </head>
 <body>
   <div class="announcement">Join us this Sunday · 8:00 AM & 10:30 AM <a href="#visit">Plan your visit →</a></div>
@@ -28,19 +29,21 @@
     <section class="hero">
       <div class="hero-shade"></div>
       <div class="hero-content reveal">
-        <p class="eyebrow">Welcome home</p>
-        <h1>There is a place<br><em>for you here.</em></h1>
+        <p class="eyebrow"><span></span> Welcome home</p>
+        <h1>Encounter God.<br><em>Discover purpose.</em></h1>
         <p><?= htmlspecialchars($church['tagline']) ?></p>
-        <div class="hero-actions"><a class="button primary" href="#visit">Plan your visit</a><a class="button ghost" href="#sermons"><span class="play">▶</span> Watch a message</a></div>
+        <div class="hero-actions"><a class="button primary" href="#visit">Plan your visit</a><a class="button ghost" href="#sermons"><span class="play">▶</span> Watch a message</a></div><div class="hero-proof"><div class="proof-faces"><i></i><i></i><i></i></div><span><b>You belong here</b><small>Join a growing family of faith</small></span></div>
       </div>
       <div class="hero-emblem" aria-hidden="true"><img src="assets/images/bread-of-life-logo.png" alt=""><span class="orbit one"></span><span class="orbit two"></span></div>
       <div class="service-pill"><span>Next gathering</span><b>Sunday · 8:00 AM</b></div>
     </section>
 
+    <section class="quick-connect" aria-label="Quick church information"><a href="#visit"><span class="quick-icon">⌖</span><span><small>Find us</small><b>Plan your first visit</b></span><i>↗</i></a><a href="#sermons"><span class="quick-icon">▶</span><span><small>Latest message</small><b>Watch on demand</b></span><i>↗</i></a><a href="#events"><span class="quick-icon">◷</span><span><small>This week</small><b>See what’s happening</b></span><i>↗</i></a></section>
+
     <section class="welcome section" id="about">
       <div class="section-kicker">Who we are</div>
       <div class="welcome-grid">
-        <div><h2>Faith for today.<br><em>Hope for tomorrow.</em></h2></div>
+        <div><h2>More than a service.<br><em>A family to call home.</em></h2><div class="signature-line"><span></span> Bread of Life DCM</div></div>
         <div><p class="lead">We are a growing family of believers committed to knowing Jesus, living His Word and sharing His love with our community.</p><p>Whatever your story or season, you are welcome here. Come as you are and discover a place to worship, grow, serve and belong.</p><a class="text-link" href="#beliefs">Discover our story →</a></div>
       </div>
       <div class="photo-strip">
@@ -65,7 +68,7 @@
 
     <section class="ministries section" id="ministries">
       <div class="centered"><div class="section-kicker">Find your community</div><h2>There’s a place for everyone</h2><p>Life is better together. Find connection, purpose and spiritual growth in one of our ministry families.</p></div>
-      <div class="card-grid">
+      <div class="card-grid ministry-bento">
         <article class="ministry-card"><span>01</span><div class="icon">✦</div><h3>Children</h3><p>A safe, joyful space where children discover God's love.</p><a href="#contact">Learn more →</a></article>
         <article class="ministry-card featured"><span>02</span><div class="icon">↗</div><h3>Youth</h3><p>Helping a generation grow bold in faith and purpose.</p><a href="#contact">Learn more →</a></article>
         <article class="ministry-card"><span>03</span><div class="icon">♡</div><h3>Women & Men</h3><p>Meaningful fellowship, discipleship and support for every season.</p><a href="#contact">Learn more →</a></article>
@@ -89,6 +92,8 @@
         <a class="button primary" href="#contact">Let us know you’re coming</a>
       </div>
     </section>
+
+    <section class="stories section"><div class="stories-heading"><div class="section-kicker light">Stories of grace</div><h2>Lives transformed.<br><em>Hope restored.</em></h2><p>God is writing beautiful stories in our community. There is room for your story too.</p></div><div class="story-card"><span class="quote-mark">“</span><blockquote>I found more than a church—I found people who prayed with me, stood beside my family and helped me grow in faith.</blockquote><div class="story-person"><div class="story-avatar">AM</div><span><b>A ministry family</b><small>Member testimony · Sample</small></span></div><div class="story-nav"><button aria-label="Previous story">←</button><button aria-label="Next story">→</button></div></div></section>
 
     <section class="give section" id="give"><div><div class="section-kicker light">Generosity</div><h2>We give because<br><em>God first gave.</em></h2></div><div><p>Your generosity helps us share the Gospel, care for families and serve our community. Add your secure giving provider link here when ready.</p><a class="button cream" href="#contact">Give securely</a></div></section>
 

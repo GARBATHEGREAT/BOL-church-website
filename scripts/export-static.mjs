@@ -29,5 +29,6 @@ fs.writeFileSync(path.join(dist, 'index.html'), html);
 fs.copyFileSync(path.join(root, 'assets/css/style.css'), path.join(dist, 'assets/css/style.css'));
 fs.copyFileSync(path.join(root, 'assets/js/main.js'), path.join(dist, 'assets/js/main.js'));
 fs.copyFileSync(path.join(root, 'assets/css/theme.css'), path.join(dist, 'assets/css/theme.css'));
+fs.copyFileSync(path.join(root, 'assets/css/premium.css'), path.join(dist, 'assets/css/premium.css'));
 fs.copyFileSync(path.join(root, 'assets/images/bread-of-life-logo.png'), path.join(dist, 'assets/images/bread-of-life-logo.png'));
 console.log('Static demo exported to dist/');
