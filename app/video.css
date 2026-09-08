@@ -1,0 +1,1 @@
+.video-list{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:45px}.video-list .video-placeholder{margin-top:0}.video-placeholder iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px}@media(max-width:760px){.video-list{grid-template-columns:1fr}}
