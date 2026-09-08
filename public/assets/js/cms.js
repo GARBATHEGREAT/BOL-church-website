@@ -7,7 +7,22 @@
     const data = await response.json();
     const saved = data.settings || {};
     applySettings({
+      announcementText: saved.announcement_text,
+      announcementLinkText: saved.announcement_link_text,
+      sundayTimes: saved.sunday_times,
+      wednesdayTime: saved.wednesday_time,
+      fridayTime: saved.friday_time,
+      heroWelcome: saved.hero_welcome,
+      heroHeading: saved.hero_heading,
+      heroAccent: saved.hero_accent,
       tagline: saved.hero_tagline,
+      aboutHeading: saved.about_heading,
+      aboutAccent: saved.about_accent,
+      aboutText: saved.about_text,
+      visitKicker: saved.visit_kicker,
+      visitHeading: saved.visit_heading,
+      visitText: saved.visit_text,
+      visitButton: saved.visit_button,
       pastorName: saved.pastor_name,
       pastorTitle: saved.pastor_title,
       address: saved.church_address,
@@ -15,6 +30,7 @@
       email: saved.church_email,
       youtubeChannel: saved.youtube_channel
     });
+    applyImpact(saved);
     showRandomSermon(data.sermons || [], saved.pastor_title);
     showEvents(data.events || []);
   } catch {
@@ -23,9 +39,27 @@
 })();
 
 function applySettings(settings) {
+  setText('.announcement', settings.announcementText, true);
+  setText('.announcement a', settings.announcementLinkText);
+  setText('.nav-meta b', settings.sundayTimes);
+  setText('.service-pill b', settings.sundayTimes);
+  setText('.hero .eyebrow', settings.heroWelcome, true);
+  setText('.hero h1', settings.heroHeading, true);
+  setText('.hero h1 em', settings.heroAccent);
   setText('.hero-content > p:not(.eyebrow)', settings.tagline);
+  setText('.welcome-grid h2', settings.aboutHeading, true);
+  setText('.welcome-grid h2 em', settings.aboutAccent);
+  setText('.welcome-grid .lead', settings.aboutText);
+  setText('.visit-copy .section-kicker', settings.visitKicker);
+  setText('.visit-copy h2', settings.visitHeading);
+  setText('.visit-copy > p', settings.visitText);
+  setText('.visit-copy > .button', settings.visitButton);
   setText('.speaker b', settings.pastorName);
   setText('.speaker small', settings.pastorTitle);
+  const services = document.querySelectorAll('.service-list > div');
+  if (services[0] && settings.sundayTimes) services[0].querySelector('b').textContent = settings.sundayTimes;
+  if (services[1] && settings.wednesdayTime) services[1].querySelector('b').textContent = settings.wednesdayTime;
+  if (services[2] && settings.fridayTime) services[2].querySelector('b').textContent = settings.fridayTime;
 
   if (settings.youtubeChannel) {
     document.querySelectorAll('a[href*="youtube.com"]').forEach(function (link) {
@@ -38,6 +72,19 @@ function applySettings(settings) {
   if (contact[1] && (settings.phone || settings.email)) {
     contact[1].innerHTML = escapeHtml(settings.phone || '') + '<br>' + escapeHtml(settings.email || '');
   }
+}
+
+function applyImpact(saved) {
+  document.querySelectorAll('.impact-strip > div').forEach(function (item, index) {
+    const number = saved['impact_' + (index + 1) + '_number'];
+    const label = saved['impact_' + (index + 1) + '_label'];
+    const counter = item.querySelector('b');
+    if (counter && number) {
+      counter.dataset.count = String(Math.max(0, Number(number) || 0));
+      counter.textContent = '0';
+    }
+    if (label) item.querySelector('span').textContent = label;
+  });
 }
 
 function showRandomSermon(sermons, pastorTitle) {
@@ -65,9 +112,16 @@ function showEvents(events) {
   }).join('');
 }
 
-function setText(selector, value) {
+function setText(selector, value, preserveChild) {
   const element = document.querySelector(selector);
-  if (element && value) element.textContent = value;
+  if (!element || !value) return;
+  if (preserveChild) {
+    const child = element.querySelector('a,em,span');
+    const textNode = [...element.childNodes].find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
+    if (textNode) textNode.textContent = value + (child ? ' ' : '');
+    return;
+  }
+  element.textContent = value;
 }
 
 function escapeHtml(value) {
