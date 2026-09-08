@@ -1,1 +1,77 @@
-(async function(){try{const r=await fetch('/api/content');if(!r.ok)return;const d=await r.json();const s=d.settings||{};if(s.hero_tagline){const p=document.querySelector('.hero-content>p:not(.eyebrow)');if(p)p.textContent=s.hero_tagline}if(s.pastor_name){const p=document.querySelector('.speaker b');if(p)p.textContent=s.pastor_name}document.querySelectorAll('a[href*="youtube.com"]').forEach(a=>a.href=s.youtube_channel||'https://youtube.com/@bread_of_life_dcm');if(d.sermons?.length){const x=d.sermons[Math.floor(Math.random()*d.sermons.length)];const frame=document.querySelector('.video-wrap iframe');if(frame)frame.src='https://www.youtube.com/embed/'+x.youtube_id;const title=document.querySelector('.message-copy h3');if(title)title.textContent=x.title;const pastor=document.querySelector('.speaker b');if(pastor)pastor.textContent=x.pastor;const meta=document.querySelector('.speaker small');if(meta)meta.textContent=(s.pastor_title||'Speaker')+' · '+x.duration}if(d.events?.length){const list=document.querySelector('.events-list');if(list)list.innerHTML=d.events.slice(0,3).map(x=>{const date=new Date(x.event_date+'T00:00:00');return '<article><div class="date"><b>'+String(date.getDate()).padStart(2,'0')+'</b><span>'+date.toLocaleString('en',{month:'short'}).toUpperCase()+'</span></div><div><span class="tag gold">Event</span><h3>'+escapeHtml(x.title)+'</h3><p>'+escapeHtml(x.event_time)+' · '+escapeHtml(x.location||'Church Auditorium')+'</p></div><a href="#contact">↗</a></article>'}).join('')}function escapeHtml(v){const e=document.createElement('div');e.textContent=v;return e.innerHTML}}catch{}})();
+/* Loads easy file settings, then applies changes saved through Admin. */
+(async function () {
+  applySettings(window.CHURCH_SITE_SETTINGS || {});
+  try {
+    const response = await fetch('/api/content');
+    if (!response.ok) return;
+    const data = await response.json();
+    const saved = data.settings || {};
+    applySettings({
+      tagline: saved.hero_tagline,
+      pastorName: saved.pastor_name,
+      pastorTitle: saved.pastor_title,
+      address: saved.church_address,
+      phone: saved.church_phone,
+      email: saved.church_email,
+      youtubeChannel: saved.youtube_channel
+    });
+    showRandomSermon(data.sermons || [], saved.pastor_title);
+    showEvents(data.events || []);
+  } catch {
+    console.info('Using default website settings.');
+  }
+})();
+
+function applySettings(settings) {
+  setText('.hero-content > p:not(.eyebrow)', settings.tagline);
+  setText('.speaker b', settings.pastorName);
+  setText('.speaker small', settings.pastorTitle);
+
+  if (settings.youtubeChannel) {
+    document.querySelectorAll('a[href*="youtube.com"]').forEach(function (link) {
+      link.href = settings.youtubeChannel;
+    });
+  }
+
+  const contact = document.querySelectorAll('.contact-details span');
+  if (contact[0] && settings.address) contact[0].textContent = settings.address;
+  if (contact[1] && (settings.phone || settings.email)) {
+    contact[1].innerHTML = escapeHtml(settings.phone || '') + '<br>' + escapeHtml(settings.email || '');
+  }
+}
+
+function showRandomSermon(sermons, pastorTitle) {
+  if (!sermons.length) return;
+  const sermon = sermons[Math.floor(Math.random() * sermons.length)];
+  const video = document.querySelector('.video-wrap iframe');
+  if (video) video.src = 'https://www.youtube.com/embed/' + sermon.youtube_id;
+  setText('.message-copy h3', sermon.title);
+  setText('.speaker b', sermon.pastor);
+  setText('.speaker small', (pastorTitle || 'Speaker') + ' · ' + sermon.duration);
+}
+
+function showEvents(events) {
+  const list = document.querySelector('.events-list');
+  if (!list || !events.length) return;
+  list.innerHTML = events.slice(0, 3).map(function (event) {
+    const date = new Date(event.event_date + 'T00:00:00');
+    return '<article><div class="date"><b>' +
+      String(date.getDate()).padStart(2, '0') + '</b><span>' +
+      date.toLocaleString('en', {month:'short'}).toUpperCase() +
+      '</span></div><div><span class="tag gold">Event</span><h3>' +
+      escapeHtml(event.title) + '</h3><p>' + escapeHtml(event.event_time) +
+      ' · ' + escapeHtml(event.location || 'Church Auditorium') +
+      '</p></div><a href="#contact">↗</a></article>';
+  }).join('');
+}
+
+function setText(selector, value) {
+  const element = document.querySelector(selector);
+  if (element && value) element.textContent = value;
+}
+
+function escapeHtml(value) {
+  const element = document.createElement('div');
+  element.textContent = value || '';
+  return element.innerHTML;
+}

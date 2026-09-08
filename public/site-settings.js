@@ -1,0 +1,15 @@
+/* EASY WEBSITE SETTINGS
+ * Change only the words between quotation marks, then save this file.
+ * Values saved in the Admin dashboard take priority over this file.
+ */
+window.CHURCH_SITE_SETTINGS = {
+  churchName: "Bread of Life Divine Covenant Ministry",
+  tagline: "A place to belong. A people becoming like Christ.",
+  pastorName: "Pastor's Name",
+  pastorTitle: "Lead Pastor",
+  sundayTimes: "8:00 AM & 10:30 AM",
+  address: "Your Church Address, Your City, Nigeria",
+  phone: "+234 800 000 0000",
+  email: "hello@breadoflifedcm.org",
+  youtubeChannel: "https://youtube.com/@bread_of_life_dcm"
+};
