@@ -1,4 +1,41 @@
-import{env}from'cloudflare:workers';import{headers}from'next/headers';
-const ADMIN='garbajohn101@gmail.com';async function allowed(){if(process.env.NODE_ENV==='development')return true;return((await headers()).get('oai-authenticated-user-email')||'').toLowerCase()===ADMIN}
-export async function GET(){if(!await allowed())return Response.json({error:'Forbidden'},{status:403});const [settings,submissions,sermons,events]=await Promise.all([env.DB.prepare('SELECT key,value FROM settings ORDER BY key').all(),env.DB.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIMIT 250').all(),env.DB.prepare('SELECT * FROM sermons ORDER BY featured DESC,id DESC').all(),env.DB.prepare('SELECT * FROM events ORDER BY event_date ASC').all()]);return Response.json({settings:settings.results,submissions:submissions.results,sermons:sermons.results,events:events.results})}
-export async function POST(req:Request){if(!await allowed())return Response.json({error:'Forbidden'},{status:403});const x=await req.json() as Record<string,unknown>;const now=new Date().toISOString();if(x.action==='setting'){await env.DB.prepare('INSERT INTO settings(key,value,updated_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at').bind(String(x.key).slice(0,80),String(x.value).slice(0,4000),now).run()}else if(x.action==='sermon'){const id=String(x.youtubeId||'').match(/(?:youtu\.be\/|v=|embed\/)([\w-]{6,})/)?.[1]||String(x.youtubeId||'').trim();await env.DB.prepare('INSERT INTO sermons(youtube_id,title,pastor,duration,published,featured,created_at) VALUES(?,?,?,?,1,?,?)').bind(id,String(x.title||''),String(x.pastor||''),String(x.duration||''),x.featured?1:0,now).run()}else if(x.action==='event'){await env.DB.prepare('INSERT INTO events(title,event_date,event_time,location,published) VALUES(?,?,?,?,1)').bind(String(x.title||''),String(x.eventDate||''),String(x.eventTime||''),String(x.location||'')).run()}else if(x.action==='status'){await env.DB.prepare('UPDATE submissions SET status=? WHERE id=?').bind(String(x.status),Number(x.id)).run()}else if(x.action==='delete_sermon'){await env.DB.prepare('DELETE FROM sermons WHERE id=?').bind(Number(x.id)).run()}else if(x.action==='delete_event'){await env.DB.prepare('DELETE FROM events WHERE id=?').bind(Number(x.id)).run()}else return Response.json({error:'Unknown action'},{status:400});return Response.json({ok:true})}
+import {env} from 'cloudflare:workers';
+import {headers} from 'next/headers';
+const ADMIN='garbajohn101@gmail.com';
+async function allowed(){if(process.env.NODE_ENV==='development')return true;return((await headers()).get('oai-authenticated-user-email')||'').toLowerCase()===ADMIN}
+export async function GET(){
+ if(!await allowed())return Response.json({error:'Forbidden'},{status:403});
+ const[settings,submissions,sermons,events]=await Promise.all([
+  env.DB.prepare('SELECT key,value FROM settings ORDER BY key').all(),
+  env.DB.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIMIT 250').all(),
+  env.DB.prepare('SELECT * FROM sermons ORDER BY featured DESC,id DESC').all(),
+  env.DB.prepare('SELECT * FROM events ORDER BY event_date ASC').all()
+ ]);
+ return Response.json({settings:settings.results,submissions:submissions.results,sermons:sermons.results,events:events.results});
+}
+export async function POST(req:Request){
+ if(!await allowed())return Response.json({error:'Forbidden'},{status:403});
+ const x=await req.json() as Record<string,any>,now=new Date().toISOString();
+ if(x.action==='setting'){
+  await saveSetting(String(x.key),String(x.value),now);
+ }else if(x.action==='settings_bulk'){
+  const values=x.values&&typeof x.values==='object'?x.values:{};
+  for(const[key,value]of Object.entries(values))await saveSetting(key,String(value),now);
+ }else if(x.action==='sermon'){
+  const id=String(x.youtubeId||'').match(/(?:youtu\.be\/|v=|embed\/)([\w-]{6,})/)?.[1]||String(x.youtubeId||'').trim();
+  await env.DB.prepare('INSERT INTO sermons(youtube_id,title,pastor,duration,published,featured,created_at) VALUES(?,?,?,?,1,?,?)').bind(id,String(x.title||''),String(x.pastor||''),String(x.duration||''),x.featured?1:0,now).run();
+ }else if(x.action==='event'){
+  await env.DB.prepare('INSERT INTO events(title,event_date,event_time,location,published) VALUES(?,?,?,?,1)').bind(String(x.title||''),String(x.eventDate||''),String(x.eventTime||''),String(x.location||'')).run();
+ }else if(x.action==='edit_event'){
+  await env.DB.prepare('UPDATE events SET title=?,event_date=?,event_time=?,location=? WHERE id=?').bind(String(x.title||''),String(x.eventDate||''),String(x.eventTime||''),String(x.location||''),Number(x.id)).run();
+ }else if(x.action==='status'){
+  await env.DB.prepare('UPDATE submissions SET status=? WHERE id=?').bind(String(x.status),Number(x.id)).run();
+ }else if(x.action==='delete_sermon'){
+  await env.DB.prepare('DELETE FROM sermons WHERE id=?').bind(Number(x.id)).run();
+ }else if(x.action==='delete_event'){
+  await env.DB.prepare('DELETE FROM events WHERE id=?').bind(Number(x.id)).run();
+ }else return Response.json({error:'Unknown action'},{status:400});
+ return Response.json({ok:true});
+}
+async function saveSetting(key:string,value:string,now:string){
+ await env.DB.prepare('INSERT INTO settings(key,value,updated_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at').bind(key.slice(0,80),value.slice(0,4000),now).run();
+}
