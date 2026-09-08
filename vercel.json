@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/", "destination": "/home.html" }
+  ],
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/admin",
+      "permanent": false
+    }
+  ]
+}
