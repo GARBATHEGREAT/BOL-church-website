@@ -10,6 +10,7 @@ The public church website and private administration dashboard are kept separate
 | `public/site-settings.js` | Church name, pastor, contacts, service time and YouTube link |
 | `public/assets/css/` | Public website colors, spacing and responsive design |
 | `public/assets/images/` | Logo and replaceable local pictures |
+| `public/assets/images/ministry/` | Leadership and church-family photos |
 | `public/assets/js/` | Menu, animations, forms and database content |
 | `app/admin/` | Private administration dashboard |
 | `app/api/` | Database connections used by the website |
@@ -123,4 +124,11 @@ Never upload passwords, API keys, login tokens or private visitor information to
 - The downloaded project uses a local database. It does not download private information from the live website.
 - The live database is managed by the hosting platform.
 - YouTube videos can be added from the Admin dashboard using a normal YouTube video link.
+- YouTube, Instagram, Facebook and TikTok links can be changed under **Website editor → Church contact & social media**.
 - If the database tables change, run `npm run db:generate`, inspect the new migration, then run `npm run db:setup`.
+
+## Website versions
+
+- `main` is the current website.
+- The branch and tag named `version-1` preserve the complete original design from before the social-media and ministry-photo update.
+- To inspect Version 1 without changing the current website, download the `version-1` branch from the repository.

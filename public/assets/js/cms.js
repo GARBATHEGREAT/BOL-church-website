@@ -25,10 +25,15 @@
       visitButton: saved.visit_button,
       pastorName: saved.pastor_name,
       pastorTitle: saved.pastor_title,
+      leaderName: saved.leader_name,
+      leaderTitle: saved.leader_title,
       address: saved.church_address,
       phone: saved.church_phone,
       email: saved.church_email,
-      youtubeChannel: saved.youtube_channel
+      youtubeChannel: saved.youtube_channel,
+      instagramUrl: saved.instagram_url,
+      facebookUrl: saved.facebook_url,
+      tiktokUrl: saved.tiktok_url
     });
     applyImpact(saved);
     showRandomSermon(data.sermons || [], saved.pastor_title);
@@ -56,6 +61,10 @@ function applySettings(settings) {
   setText('.visit-copy > .button', settings.visitButton);
   setText('.speaker b', settings.pastorName);
   setText('.speaker small', settings.pastorTitle);
+  setText('[data-pastor-name]', settings.pastorName);
+  setText('[data-pastor-title]', settings.pastorTitle);
+  setText('[data-leader-name]', settings.leaderName);
+  setText('[data-leader-title]', settings.leaderTitle);
   const services = document.querySelectorAll('.service-list > div');
   if (services[0] && settings.sundayTimes) services[0].querySelector('b').textContent = settings.sundayTimes;
   if (services[1] && settings.wednesdayTime) services[1].querySelector('b').textContent = settings.wednesdayTime;
@@ -66,12 +75,23 @@ function applySettings(settings) {
       link.href = settings.youtubeChannel;
     });
   }
+  setSocialLink('youtube', settings.youtubeChannel);
+  setSocialLink('instagram', settings.instagramUrl);
+  setSocialLink('facebook', settings.facebookUrl);
+  setSocialLink('tiktok', settings.tiktokUrl);
 
   const contact = document.querySelectorAll('.contact-details span');
   if (contact[0] && settings.address) contact[0].textContent = settings.address;
   if (contact[1] && (settings.phone || settings.email)) {
     contact[1].innerHTML = escapeHtml(settings.phone || '') + '<br>' + escapeHtml(settings.email || '');
   }
+}
+
+function setSocialLink(network, value) {
+  if (!value) return;
+  document.querySelectorAll('[data-social="' + network + '"]').forEach(function (link) {
+    link.href = value;
+  });
 }
 
 function applyImpact(saved) {
