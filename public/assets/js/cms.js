@@ -1,8 +1,15 @@
 /* Loads easy file settings, then applies changes saved through Admin. */
-(async function () {
+let cmsRefreshInProgress = false;
+
+async function loadCmsContent() {
+  if (cmsRefreshInProgress) return;
+  cmsRefreshInProgress = true;
   applySettings(window.CHURCH_SITE_SETTINGS || {});
   try {
-    const response = await fetch('/api/content');
+    const response = await fetch('/api/content?updated=' + Date.now(), {
+      cache: 'no-store',
+      headers: {'Cache-Control': 'no-cache'}
+    });
     if (!response.ok) return;
     const data = await response.json();
     const saved = data.settings || {};
@@ -45,8 +52,20 @@
     applyManagedContent(data.contentItems || []);
   } catch {
     console.info('Using default website settings.');
+  } finally {
+    cmsRefreshInProgress = false;
   }
-})();
+}
+
+loadCmsContent();
+
+// Refresh content after returning from Admin or restoring a mobile browser tab.
+window.addEventListener('pageshow', function (event) {
+  if (event.persisted) loadCmsContent();
+});
+document.addEventListener('visibilitychange', function () {
+  if (!document.hidden) loadCmsContent();
+});
 
 function applySectionSettings(saved) {
   if (saved.giving_button && saved.giving_button.trim().toLowerCase() === 'give securely') {
@@ -77,7 +96,10 @@ function applySectionSettings(saved) {
 }
 
 function applySettings(settings) {
-  setText('.announcement > span', settings.announcementText);
+  const announcement = [settings.announcementText, settings.sundayTimes]
+    .filter(Boolean)
+    .join(' · ');
+  setText('.announcement > span', announcement);
   setText('.announcement a', settings.announcementLinkText);
   setText('.nav-meta b', settings.sundayTimes);
   setText('.service-pill b', settings.sundayTimes);
