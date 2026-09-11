@@ -124,6 +124,8 @@ function applySettings(settings) {
 }
 
 function setSocialLink(network, value) {
+  // Keep verified page defaults when the database has no value for a platform.
+  if (value === undefined || value === null) return;
   document.querySelectorAll('[data-social="' + network + '"]').forEach(function (link) {
     link.hidden = !value;
     if (value) link.href = value;
