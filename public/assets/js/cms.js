@@ -152,9 +152,15 @@ function renderHero(items) {
     return '<div class="hero-bg' + (index === 0 ? ' active' : '') + '" style="background-image:url(&quot;' + escapeAttribute(item.image_url) + '&quot;)"></div>';
   }).join('');
   const first = items[0];
-  setText('.hero .eyebrow', first.subtitle || 'Welcome home', true);
+  // Early seeded hero records stored the title and subtitle in reverse order.
+  // Normalize only that known legacy record so current Admin edits remain authoritative.
+  const legacyHeroOrder = /^welcome home[.!]?$/i.test((first.title || '').trim()) &&
+    /encounter god/i.test(first.subtitle || '');
+  const heroTitle = legacyHeroOrder ? first.subtitle : first.title;
+  const heroSubtitle = legacyHeroOrder ? first.title : first.subtitle;
+  setText('.hero .eyebrow', heroSubtitle || 'Welcome home', true);
   const heading = document.querySelector('.hero h1');
-  if (heading && first.title) heading.innerHTML = splitHeading(first.title);
+  if (heading && heroTitle) heading.innerHTML = splitHeading(heroTitle);
   setText('.hero-content > p:not(.eyebrow)', first.description);
   const button = document.querySelector('.hero-actions .primary');
   if (button && first.button_text) setText('.hero-actions .primary .button-label', first.button_text);
