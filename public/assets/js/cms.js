@@ -49,6 +49,9 @@
 })();
 
 function applySectionSettings(saved) {
+  if (saved.giving_button && saved.giving_button.trim().toLowerCase() === 'give securely') {
+    saved.giving_button = 'Give Bountifully';
+  }
   const values = [
     ['.leadership-intro .section-kicker','leadership_kicker'],['.leadership-intro h2','leadership_heading'],['.leadership-intro p','leadership_text'],
     ['.ministries .section-kicker','community_kicker'],['.ministries h2','community_heading'],['.ministries .centered > p','community_text'],
