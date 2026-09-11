@@ -56,8 +56,18 @@ function applySectionSettings(saved) {
     ,['.stories .section-kicker','stories_kicker'],['.stories-heading h2','stories_heading'],['.stories-heading > p','stories_text'],['.story-card blockquote','story_quote'],['.story-person b','story_person']
     ,['.give .section-kicker','giving_kicker'],['.give h2','giving_heading'],['.give > div:last-child > p','giving_text'],['.give .button','giving_button']
     ,['.contact .section-kicker','contact_kicker'],['.contact h2','contact_heading'],['.contact > div > p','contact_text'],['#contact-form button','contact_button']
+    ,['.hero-actions .primary .button-label','hero_primary_text'],['.hero-actions .ghost .button-label','hero_secondary_text'],['.hero-proof b','hero_proof_title'],['.hero-proof small','hero_proof_text'],['.prayer-float b','prayer_button_text']
+    ,['.quick-connect > a:nth-child(1) small','quick_1_label'],['.quick-connect > a:nth-child(1) b','quick_1_title'],['.quick-connect > a:nth-child(2) small','quick_2_label'],['.quick-connect > a:nth-child(2) b','quick_2_title'],['.quick-connect > a:nth-child(3) small','quick_3_label'],['.quick-connect > a:nth-child(3) b','quick_3_title']
+    ,['.about-secondary','about_secondary_text'],['.about-link','about_link_text'],['.signature-line b','signature_text']
+    ,['.verse:nth-child(1) p','verse_1_text'],['.verse:nth-child(1) span','verse_1_ref'],['.verse:nth-child(2) p','verse_2_text'],['.verse:nth-child(2) span','verse_2_ref'],['.verse:nth-child(3) p','verse_3_text'],['.verse:nth-child(3) span','verse_3_ref']
+    ,['.nav-links > a:nth-child(1)','nav_about'],['.nav-links > a:nth-child(2)','nav_messages'],['.nav-links .explore-toggle b','nav_connect'],['.nav-links > a:nth-child(4)','nav_events'],['.nav-links > a:nth-child(5)','nav_contact'],['footer > p','footer_tagline'],['.copyright','footer_copyright']
   ];
   values.forEach(([selector,key]) => setText(selector,saved[key]));
+  const links = [
+    ['.hero-actions .primary','hero_primary_url'],['.hero-actions .ghost','hero_secondary_url'],
+    ['.quick-connect > a:nth-child(1)','quick_1_url'],['.quick-connect > a:nth-child(2)','quick_2_url'],['.quick-connect > a:nth-child(3)','quick_3_url'],['.about-link','about_link_url']
+  ];
+  links.forEach(([selector,key]) => { const element=document.querySelector(selector); if(element&&saved[key]) element.href=saved[key]; });
   if (saved.maps_url) document.querySelectorAll('[data-map-link]').forEach(link => link.href = saved.maps_url);
   if (saved.giving_url) document.querySelectorAll('[data-giving-link]').forEach(link => link.href = saved.giving_url);
 }
@@ -140,7 +150,7 @@ function renderHero(items) {
   if (heading && first.title) heading.innerHTML = splitHeading(first.title);
   setText('.hero-content > p:not(.eyebrow)', first.description);
   const button = document.querySelector('.hero-actions .primary');
-  if (button && first.button_text) button.textContent = first.button_text;
+  if (button && first.button_text) setText('.hero-actions .primary .button-label', first.button_text);
   if (button && first.button_url) button.href = first.button_url;
   if (items.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     let active = 0;
