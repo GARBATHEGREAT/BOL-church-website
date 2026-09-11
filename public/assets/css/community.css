@@ -107,3 +107,13 @@
 @media(min-width:901px){.nav-social-shortcuts{display:flex!important}}
 @media(min-width:901px) and (max-width:1180px){.nav-meta{display:none!important}.site-header nav{gap:12px}.nav-links{gap:14px}.nav-social-shortcuts a{width:31px;height:31px}}
 @media(max-width:900px){#main-navigation .nav-social-shortcuts{display:flex!important;gap:10px;margin-top:18px}#main-navigation .nav-social-shortcuts a{width:42px;height:42px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.2);border-radius:50%;color:#fff}#main-navigation .nav-social-shortcuts span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
+
+/* Mobile menu correction: one social row, visible identity, compact actions. */
+@media(max-width:900px){
+  .site-header nav .nav-mobile-head{display:flex!important;position:sticky;top:0;z-index:4;background:var(--blue-deep);padding:14px 20px!important}
+  .nav-mobile-head>span{display:flex;align-items:center;gap:10px}.nav-mobile-head img{width:46px;height:46px;padding:2px;object-fit:contain;background:#fff;border-radius:50%}.nav-mobile-head b,.nav-mobile-head small{display:block}.nav-mobile-head b{color:#fff;font:600 16px var(--display);text-transform:none;letter-spacing:0}.nav-mobile-head small{margin-top:3px;color:#ffc056;font-size:7px}
+  .site-header nav .nav-links{padding:8px 20px!important}.nav-links>a,.explore-toggle{padding:11px 0!important;font-size:25px!important}
+  #main-navigation .nav-social-shortcuts{order:3;margin:8px 20px 4px!important}
+  .site-header nav .nav-actions{order:4;padding:8px 20px 12px!important;gap:8px}.nav-actions .nav-visit,.nav-actions .nav-give{min-height:48px!important;font-size:11px!important}
+  .site-header nav .nav-mobile-foot{order:5;margin-top:0!important;padding:13px 20px!important}.nav-mobile-foot .nav-socials{display:none!important}.nav-mobile-foot p{display:none}.nav-mobile-foot>a{font-size:12px}
+}
