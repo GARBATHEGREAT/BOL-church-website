@@ -117,3 +117,8 @@
   .site-header nav .nav-actions{order:4;padding:8px 20px 12px!important;gap:8px}.nav-actions .nav-visit,.nav-actions .nav-give{min-height:48px!important;font-size:11px!important}
   .site-header nav .nav-mobile-foot{order:5;margin-top:0!important;padding:13px 20px!important}.nav-mobile-foot .nav-socials{display:none!important}.nav-mobile-foot p{display:none}.nav-mobile-foot>a{font-size:12px}
 }
+
+/* Version 21 typography: elegant hero, clean contemporary navigation. */
+.hero h1{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:600!important;line-height:.88!important;letter-spacing:-.045em!important}.hero h1 em{font-family:inherit!important;font-weight:600!important}
+.site-header .nav-links>a,.site-header .explore-toggle,.site-header .nav-visit,.site-header .nav-give,.site-header .nav-toggle,.site-header .nav-mobile-head,.site-header .nav-mobile-head b{font-family:'Manrope',Arial,sans-serif!important}
+@media(max-width:900px){.site-header .nav-links>a,.site-header .explore-toggle{font-family:'Manrope',Arial,sans-serif!important;font-size:17px!important;font-weight:650!important;line-height:1.3!important;letter-spacing:.055em!important;text-transform:uppercase!important}.site-header .explore-toggle b{font:inherit!important}.hero h1{font-size:clamp(3.35rem,14vw,5rem)!important;line-height:.92!important}}
