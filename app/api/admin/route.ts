@@ -1,11 +1,13 @@
 import{env}from'cloudflare:workers';
 import{ADMIN_EMAIL,hashPassword,isAdmin}from'../../admin-auth';
 
-const SECTIONS=new Set(['hero_slides','word_slides','pastors','communities','visit_slides']);
+const SECTIONS=new Set(['hero_slides','word_slides','pastors','communities','visit_slides','stories']);
 
 export async function GET(){
  if(!await isAdmin())return Response.json({error:'Forbidden'},{status:403});
  await ensureDefaultContent();
+ await ensureEventColumns();
+ await ensureStoriesContent();
  const[settings,submissions,sermons,events,contentItems,adminRows]=await Promise.all([
   env.DB.prepare('SELECT key,value FROM settings ORDER BY key').all(),
   env.DB.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIMIT 250').all(),
@@ -30,8 +32,13 @@ export async function POST(req:Request){
  }else if(x.action==='edit_sermon'){
   await env.DB.prepare('UPDATE sermons SET youtube_id=?,title=?,pastor=?,duration=?,featured=? WHERE id=?').bind(youtubeId(x.youtubeId),text(x.title),text(x.pastor),text(x.duration),x.featured?1:0,Number(x.id)).run();
  }else if(x.action==='toggle_sermon')await env.DB.prepare('UPDATE sermons SET published=? WHERE id=?').bind(x.visible?1:0,Number(x.id)).run();
- else if(x.action==='event')await env.DB.prepare('INSERT INTO events(title,event_date,event_time,location,published) VALUES(?,?,?,?,1)').bind(text(x.title),text(x.eventDate),text(x.eventTime),text(x.location)).run();
- else if(x.action==='edit_event')await env.DB.prepare('UPDATE events SET title=?,event_date=?,event_time=?,location=? WHERE id=?').bind(text(x.title),text(x.eventDate),text(x.eventTime),text(x.location),Number(x.id)).run();
+ else if(x.action==='event'){
+  await ensureEventColumns();
+  await env.DB.prepare('INSERT INTO events(title,event_date,event_time,location,description,image_url,published) VALUES(?,?,?,?,?,?,1)').bind(text(x.title),text(x.eventDate),text(x.eventTime),text(x.location),text(x.description,4000),text(x.imageUrl,2000)).run();
+ }else if(x.action==='edit_event'){
+  await ensureEventColumns();
+  await env.DB.prepare('UPDATE events SET title=?,event_date=?,event_time=?,location=?,description=?,image_url=? WHERE id=?').bind(text(x.title),text(x.eventDate),text(x.eventTime),text(x.location),text(x.description,4000),text(x.imageUrl,2000),Number(x.id)).run();
+ }
  else if(x.action==='toggle_event')await env.DB.prepare('UPDATE events SET published=? WHERE id=?').bind(x.visible?1:0,Number(x.id)).run();
  else if(x.action==='status')await env.DB.prepare('UPDATE submissions SET status=? WHERE id=?').bind(text(x.status),Number(x.id)).run();
  else if(x.action==='delete_sermon')await env.DB.prepare('DELETE FROM sermons WHERE id=?').bind(Number(x.id)).run();
@@ -93,6 +100,22 @@ async function ensureDefaultContent(){
   ['visit_slides','Grow with us','One family in Christ','Take your next step in faith with people who will walk beside you.','','/assets/images/ministry/family-06.webp','Connect with us','#contact','',2]
  ];
  await env.DB.batch(defaults.map(d=>env.DB.prepare('INSERT INTO content_items(section,title,subtitle,description,body,image_url,button_text,button_url,contact_links,sort_order,visible,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,1,?,?)').bind(...d,now,now)));
+}
+
+async function ensureEventColumns(){
+ for(const sql of ["ALTER TABLE events ADD COLUMN description text NOT NULL DEFAULT ''","ALTER TABLE events ADD COLUMN image_url text NOT NULL DEFAULT ''"]){
+  try{await env.DB.prepare(sql).run()}catch{}
+ }
+}
+
+async function ensureStoriesContent(){
+ const marker=await env.DB.prepare("SELECT value FROM settings WHERE key='stories_collection_initialized'").first<any>();if(marker)return;
+ const rows=await env.DB.prepare("SELECT key,value FROM settings WHERE key IN ('story_quote','story_person')").all();
+ const legacy=Object.fromEntries((rows.results as any[]).map(x=>[x.key,x.value])),now=new Date().toISOString();
+ await env.DB.batch([
+  env.DB.prepare('INSERT INTO content_items(section,title,subtitle,description,body,image_url,button_text,button_url,contact_links,sort_order,visible,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,1,?,?)').bind('stories',text(legacy.story_person||'A ministry family'),'Member testimony',text(legacy.story_quote||'I found more than a church—I found people who prayed with me, stood beside my family and helped me grow in faith.'),'','','','','',0,now,now),
+  env.DB.prepare("INSERT INTO settings(key,value,updated_at) VALUES('stories_collection_initialized','1',?) ON CONFLICT(key) DO UPDATE SET value='1',updated_at=excluded.updated_at").bind(now)
+ ]);
 }
 
 async function saveSetting(key:string,value:string,now:string){await env.DB.prepare('INSERT INTO settings(key,value,updated_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at').bind(key.slice(0,80),value.slice(0,4000),now).run()}
