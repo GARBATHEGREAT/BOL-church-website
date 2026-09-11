@@ -75,8 +75,8 @@ function applySectionSettings(saved) {
 function applySettings(settings) {
   setText('.announcement', settings.announcementText, true);
   setText('.announcement a', settings.announcementLinkText);
-  setText('.nav-meta b', settings.sundayTimes);
-  setText('.service-pill b', settings.sundayTimes);
+  setText('.nav-meta b', settings.sundayTimes ? 'Sunday · ' + settings.sundayTimes : undefined);
+  setText('.service-pill b', settings.sundayTimes ? 'Sunday · ' + settings.sundayTimes : undefined);
   setText('.hero .eyebrow', settings.heroWelcome, true);
   setText('.hero h1', settings.heroHeading, true);
   setText('.hero h1 em', settings.heroAccent);
@@ -111,6 +111,7 @@ function applySettings(settings) {
   setSocialLink('x', settings.xUrl);
   setSocialLink('whatsapp', settings.whatsappUrl);
 
+  if (settings.phone) document.querySelectorAll('a[href^="tel:"]').forEach(link => { link.href = 'tel:' + settings.phone.replace(/[^+0-9]/g, ''); link.textContent = settings.phone; });
   const contact = document.querySelectorAll('.contact-details span');
   if (contact[0] && settings.address) contact[0].textContent = settings.address;
   if (contact[1] && (settings.phone || settings.email)) {
@@ -119,6 +120,8 @@ function applySettings(settings) {
 }
 
 function setSocialLink(network, value) {
+  // Missing admin values retain the configured links; an explicit empty value hides one.
+  if (value === undefined || value === null) return;
   document.querySelectorAll('[data-social="' + network + '"]').forEach(function (link) {
     link.hidden = !value;
     if (value) link.href = value;
