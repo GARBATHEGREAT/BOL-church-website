@@ -1,3 +1,3 @@
-import{getChatGPTUser,chatGPTSignInPath,chatGPTSignOutPath}from'../chatgpt-auth';import{ADMIN_EMAIL}from'../admin-auth';import AdminDashboard from'./dashboard';
+import{getAdminEmail}from'../admin-auth';import AdminDashboard from'./dashboard';import AdminLogin from'./login-form';
 export const dynamic='force-dynamic';
-export default async function Admin(){if(process.env.NODE_ENV==='development')return <AdminDashboard email={ADMIN_EMAIL}/>;const user=await getChatGPTUser();if(!user)return <div className="gate"><img src="/assets/images/bread-of-life-logo.webp" alt="Bread of Life logo"/><p>Church administration</p><h1>Manage Bread of Life DCM</h1><a href={chatGPTSignInPath('/admin')} target="_top">Sign in with ChatGPT</a></div>;if(user.email.toLowerCase()!==ADMIN_EMAIL)return <div className="gate"><h1>Access not approved</h1><p>This dashboard is restricted to the church administrator.</p><a href={chatGPTSignOutPath('/admin')}>Use another account</a></div>;return <AdminDashboard email={user.email}/>}
+export default async function Admin(){const email=await getAdminEmail();return email?<AdminDashboard email={email}/>:<AdminLogin/>}

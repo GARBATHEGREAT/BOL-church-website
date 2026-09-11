@@ -1,19 +1,21 @@
 import{env}from'cloudflare:workers';
-import{isAdmin}from'../../admin-auth';
+import{ADMIN_EMAIL,hashPassword,isAdmin}from'../../admin-auth';
 
 const SECTIONS=new Set(['hero_slides','word_slides','pastors','communities','visit_slides']);
 
 export async function GET(){
  if(!await isAdmin())return Response.json({error:'Forbidden'},{status:403});
  await ensureDefaultContent();
- const[settings,submissions,sermons,events,contentItems]=await Promise.all([
+ const[settings,submissions,sermons,events,contentItems,adminRows]=await Promise.all([
   env.DB.prepare('SELECT key,value FROM settings ORDER BY key').all(),
   env.DB.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIMIT 250').all(),
   env.DB.prepare('SELECT * FROM sermons ORDER BY featured DESC,id DESC').all(),
   env.DB.prepare('SELECT * FROM events ORDER BY event_date ASC').all(),
-  env.DB.prepare('SELECT * FROM content_items ORDER BY section,sort_order,id').all()
+  env.DB.prepare('SELECT * FROM content_items ORDER BY section,sort_order,id').all(),
+  env.DB.prepare("SELECT key FROM settings WHERE key LIKE 'admin_user:%' ORDER BY key").all()
  ]);
- return Response.json({settings:settings.results,submissions:submissions.results,sermons:sermons.results,events:events.results,contentItems:contentItems.results});
+ const admins=[ADMIN_EMAIL,...adminRows.results.map((row:any)=>String(row.key).slice(11))];
+ return Response.json({settings:settings.results,submissions:submissions.results,sermons:sermons.results,events:events.results,contentItems:contentItems.results,admins:[...new Set(admins)]});
 }
 
 export async function POST(req:Request){
@@ -39,6 +41,16 @@ export async function POST(req:Request){
  else if(x.action==='content_delete')await env.DB.prepare('DELETE FROM content_items WHERE id=?').bind(Number(x.id)).run();
  else if(x.action==='content_toggle')await env.DB.prepare('UPDATE content_items SET visible=?,updated_at=? WHERE id=?').bind(x.visible?1:0,now,Number(x.id)).run();
  else if(x.action==='content_move')await moveContent(Number(x.id),Number(x.direction)||0,now);
+ else if(x.action==='admin_add'){
+  const email=text(x.email,254).toLowerCase(),password=String(x.password||'');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return Response.json({error:'Enter a valid email address.'},{status:400});
+  if(password.length<10)return Response.json({error:'Password must contain at least 10 characters.'},{status:400});
+  await saveSetting('admin_user:'+email,await hashPassword(password),now);
+ }else if(x.action==='admin_delete'){
+  const email=text(x.email,254).toLowerCase();
+  if(email===ADMIN_EMAIL)return Response.json({error:'The primary administrator cannot be removed.'},{status:400});
+  await env.DB.prepare('DELETE FROM settings WHERE key=?').bind('admin_user:'+email).run();
+ }
  else return Response.json({error:'Unknown action'},{status:400});
  return Response.json({ok:true});
 }
@@ -67,7 +79,7 @@ async function ensureDefaultContent(){
  const count=await env.DB.prepare('SELECT COUNT(*) AS total FROM content_items').first<{total:number}>();if(Number(count?.total)>0)return;
  const now=new Date().toISOString();
  const defaults:any[][]=[
-  ['hero_slides','Welcome home','Encounter God. Discover purpose.','A place to belong. A people becoming like Christ.','','https://images.unsplash.com/photo-1519491050282-cf00c82424b4?auto=format&fit=crop&w=2000&q=88','Plan your visit','#visit','',0],
+  ['hero_slides','Encounter God. Discover purpose.','Welcome home','A place to belong. A people becoming like Christ.','','https://images.unsplash.com/photo-1519491050282-cf00c82424b4?auto=format&fit=crop&w=2000&q=88','Plan your visit','#visit','',0],
   ['word_slides','Growing in the Word','Worship together','We gather around Scripture, prayer and fellowship.','','/assets/images/ministry/family-05.webp','','','',0],
   ['word_slides','One family in Christ','Faith in community','Every generation has a place to learn, worship and belong.','','/assets/images/ministry/family-06.webp','','','',1],
   ['pastors','Head Pastor','Head Pastor','Leading Bread of Life Divine Covenant Ministry with faith, love and a heart for people.','','/assets/images/ministry/leader.webp','','','',0],

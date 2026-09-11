@@ -126,3 +126,88 @@
 /* Version 22: keep the primary navigation pinned reliably on every viewport. */
 html,body{overflow-x:clip}
 .site-header{position:-webkit-sticky!important;position:sticky!important;inset-block-start:0!important;top:0!important;width:100%;z-index:1000!important}
+
+/* Version 23: restore the editorial hero and refine the mobile navigation. */
+@media(max-width:900px){
+  .site-header nav{background:linear-gradient(155deg,#031a3d 0%,#06285d 100%)!important}
+  .site-header nav .nav-mobile-head{padding:18px 22px!important;border-bottom-color:rgba(255,255,255,.12)}
+  .site-header nav .nav-mobile-head img{width:50px;height:50px}
+  .site-header nav .nav-mobile-head b{font-size:17px!important;font-weight:700!important;letter-spacing:-.02em!important}
+  .site-header nav .nav-mobile-head small{font-size:8px;letter-spacing:.12em}
+  .site-header nav .nav-close{width:44px;height:44px;font-size:22px;transition:background .2s,transform .2s}
+  .site-header nav .nav-close:hover{background:rgba(255,255,255,.1);transform:rotate(4deg)}
+  .site-header nav .nav-links{padding:18px 22px 10px!important}
+  .site-header nav .nav-links>a,.site-header nav .explore-toggle{min-height:52px;padding:15px 2px!important;font-size:16px!important;font-weight:600!important;line-height:1.35!important;letter-spacing:.075em!important;text-transform:uppercase!important;border-bottom-color:rgba(255,255,255,.11)}
+  .site-header nav .explore-toggle span{font-size:18px;color:#ffc056}
+  #main-navigation .nav-social-shortcuts{margin:14px 22px 8px!important;gap:9px}
+  #main-navigation .nav-social-shortcuts a{width:40px;height:40px;transition:background .2s,transform .2s}
+  #main-navigation .nav-social-shortcuts a:hover{background:var(--forest);transform:translateY(-2px)}
+  .site-header nav .nav-actions{padding:12px 22px 16px!important;gap:9px}
+  .site-header nav .nav-actions .nav-visit,.site-header nav .nav-actions .nav-give{min-height:50px!important;font-size:11px!important;letter-spacing:.08em!important}
+  .site-header nav .nav-mobile-foot{padding:15px 22px!important}
+  .hero h1{font-size:clamp(3.45rem,14.5vw,5.15rem)!important;line-height:.88!important;letter-spacing:-.045em!important}
+}
+@media(max-width:390px){
+  .site-header nav .nav-links>a,.site-header nav .explore-toggle{min-height:48px;padding:13px 2px!important;font-size:15px!important}
+}
+
+/* Version 24: calm editorial menu type with a restrained interactive accent. */
+@media(max-width:900px){
+  .site-header nav .nav-links>a,.site-header nav .explore-toggle{
+    position:relative;
+    font-size:18px!important;
+    font-weight:600!important;
+    line-height:1.3!important;
+    letter-spacing:-.012em!important;
+    text-transform:none!important;
+  }
+  .site-header nav .nav-links>a::after,.site-header nav .explore-toggle::after{
+    content:'';
+    display:block!important;
+    position:absolute;
+    left:2px;
+    right:auto;
+    bottom:8px;
+    width:34px;
+    height:2px;
+    border-radius:2px;
+    background:#ffc056;
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .24s ease;
+  }
+  .site-header nav .nav-links>a:hover::after,.site-header nav .nav-links>a:focus-visible::after,
+  .site-header nav .explore-toggle:hover::after,.site-header nav .explore-toggle:focus-visible::after,
+  .site-header nav .explore-toggle.open::after{transform:scaleX(1)}
+  .site-header nav .explore-toggle b{font:inherit!important}
+}
+@media(max-width:390px){
+  .site-header nav .nav-links>a,.site-header nav .explore-toggle{font-size:17px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .site-header nav .nav-links>a::after,.site-header nav .explore-toggle::after{transition:none}
+}
+
+/* Version 25: quiet, purposeful motion for key editorial typography. */
+.hero .eyebrow{animation:heroCopyIn .65s cubic-bezier(.22,1,.36,1) .08s both}
+.hero h1{animation:heroHeadlineIn .9s cubic-bezier(.22,1,.36,1) .16s both}
+.hero h1 em{display:inline-block;animation:heroAccentIn .85s cubic-bezier(.22,1,.36,1) .34s both}
+.hero-content>p:not(.eyebrow){animation:heroCopyIn .72s cubic-bezier(.22,1,.36,1) .46s both}
+.hero-actions{animation:heroCopyIn .72s cubic-bezier(.22,1,.36,1) .58s both}
+.hero-proof{animation:heroCopyIn .72s cubic-bezier(.22,1,.36,1) .68s both}
+@keyframes heroHeadlineIn{from{opacity:0;transform:translateY(28px);clip-path:inset(0 0 100% 0)}to{opacity:1;transform:none;clip-path:inset(0)}}
+@keyframes heroAccentIn{from{opacity:0;transform:translate3d(18px,12px,0)}to{opacity:1;transform:none}}
+@keyframes heroCopyIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.scroll-reveal h2{transition:opacity .72s cubic-bezier(.22,1,.36,1),transform .72s cubic-bezier(.22,1,.36,1);transition-delay:.08s}
+.scroll-reveal:not(.visible) h2{opacity:0;transform:translateY(20px)}
+.scroll-reveal h2 em{display:inline-block;transition:opacity .62s ease,transform .72s cubic-bezier(.22,1,.36,1);transition-delay:.2s}
+.scroll-reveal:not(.visible) h2 em{opacity:0;transform:translateX(12px)}
+.word-slide h3,.leader-card h3,.ministry-card h3,.message-copy h3,.events-list h3,.visit-slide h3{transition:transform .28s cubic-bezier(.22,1,.36,1),color .28s ease}
+.word-slide:hover h3,.leader-card:hover h3,.ministry-card:hover h3,.video-grid:hover .message-copy h3,.events-list article:hover h3,.visit-slide:hover h3{transform:translateX(4px)}
+
+@media(prefers-reduced-motion:reduce){
+  .hero .eyebrow,.hero h1,.hero h1 em,.hero-content>p:not(.eyebrow),.hero-actions,.hero-proof{animation:none!important}
+  .scroll-reveal h2,.scroll-reveal h2 em,.word-slide h3,.leader-card h3,.ministry-card h3,.message-copy h3,.events-list h3,.visit-slide h3{transition:none!important}
+  .scroll-reveal:not(.visible) h2,.scroll-reveal:not(.visible) h2 em{opacity:1;transform:none}
+}
