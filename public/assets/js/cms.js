@@ -77,7 +77,7 @@ function applySectionSettings(saved) {
 }
 
 function applySettings(settings) {
-  setText('.announcement', settings.announcementText, true);
+  setText('.announcement > span', settings.announcementText);
   setText('.announcement a', settings.announcementLinkText);
   setText('.nav-meta b', settings.sundayTimes);
   setText('.service-pill b', settings.sundayTimes);
