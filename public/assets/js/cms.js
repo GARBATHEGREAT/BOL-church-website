@@ -84,15 +84,23 @@ function applySectionSettings(saved) {
     ,['.about-secondary','about_secondary_text'],['.about-link','about_link_text'],['.signature-line b','signature_text']
     ,['.verse:nth-child(1) p','verse_1_text'],['.verse:nth-child(1) span','verse_1_ref'],['.verse:nth-child(2) p','verse_2_text'],['.verse:nth-child(2) span','verse_2_ref'],['.verse:nth-child(3) p','verse_3_text'],['.verse:nth-child(3) span','verse_3_ref']
     ,['.nav-links > a:nth-child(1)','nav_about'],['.nav-links > a:nth-child(2)','nav_messages'],['.nav-links .explore-toggle b','nav_connect'],['.nav-links > a:nth-child(4)','nav_events'],['.nav-links > a:nth-child(5)','nav_contact'],['footer > p','footer_tagline'],['.copyright','footer_copyright']
+    ,['.nav-toggle em','nav_menu_label'],['.nav-actions .nav-visit','nav_visit_button'],['.explore-intro small','nav_explore_kicker'],['.explore-intro h3','nav_explore_heading'],['.explore-intro p','nav_explore_text'],['.nav-mobile-foot p','footer_tagline'],['.nav-mobile-foot > a','church_phone']
+    ,['.explore-grid > a:nth-child(1) b','nav_card_1_title'],['.explore-grid > a:nth-child(1) small','nav_card_1_text'],['.explore-grid > a:nth-child(2) b','nav_card_2_title'],['.explore-grid > a:nth-child(2) small','nav_card_2_text'],['.explore-grid > a:nth-child(3) b','nav_card_3_title'],['.explore-grid > a:nth-child(3) small','nav_card_3_text'],['.explore-grid > a:nth-child(4) b','nav_card_4_title'],['.explore-grid > a:nth-child(4) small','nav_card_4_text']
   ];
   values.forEach(([selector,key]) => setText(selector,saved[key]));
   const links = [
     ['.hero-actions .primary','hero_primary_url'],['.hero-actions .ghost','hero_secondary_url'],
     ['.quick-connect > a:nth-child(1)','quick_1_url'],['.quick-connect > a:nth-child(2)','quick_2_url'],['.quick-connect > a:nth-child(3)','quick_3_url'],['.about-link','about_link_url']
+    ,['.nav-actions .nav-visit','nav_visit_url'],['.explore-grid > a:nth-child(1)','nav_card_1_url'],['.explore-grid > a:nth-child(2)','nav_card_2_url'],['.explore-grid > a:nth-child(3)','nav_card_3_url'],['.explore-grid > a:nth-child(4)','nav_card_4_url']
   ];
   links.forEach(([selector,key]) => { const element=document.querySelector(selector); if(element&&saved[key]) element.href=saved[key]; });
   if (saved.maps_url) document.querySelectorAll('[data-map-link]').forEach(link => link.href = saved.maps_url);
   if (saved.giving_url) document.querySelectorAll('[data-giving-link]').forEach(link => link.href = saved.giving_url);
+  if (saved.giving_button) setText('.nav-actions .nav-give',saved.giving_button+' ↗');
+  if (saved.church_phone) {
+    const phone=document.querySelector('.nav-mobile-foot > a');
+    if(phone)phone.href='tel:'+saved.church_phone.replace(/[^+\d]/g,'');
+  }
 }
 
 function applySettings(settings) {
@@ -164,6 +172,7 @@ function applyManagedContent(items) {
   renderCarousel('[data-carousel="pastors"]', grouped.pastors || [], renderPastorSlide);
   renderCommunities(grouped.communities || []);
   renderCarousel('[data-carousel="visit"]', grouped.visit_slides || [], renderVisitSlide);
+  renderCarousel('[data-carousel="stories"]', grouped.stories || [], renderStorySlide);
 }
 
 function renderHero(items) {
@@ -230,6 +239,12 @@ function renderVisitSlide(item) {
   return '<article class="visit-slide carousel-slide"><img src="' + escapeAttribute(item.image_url) + '" alt="' + escapeAttribute(item.title) + '" loading="lazy"><div><span>' + escapeHtml(item.subtitle) + '</span><h3>' + escapeHtml(item.title) + '</h3><p>' + escapeHtml(item.description) + '</p>' + (item.button_text ? '<a href="' + escapeAttribute(item.button_url || '#contact') + '">' + escapeHtml(item.button_text) + '</a>' : '') + '</div></article>';
 }
 
+function renderStorySlide(item) {
+  const initials = String(item.title || 'Church family').split(/\s+/).slice(0, 2).map(word => word[0]).join('').toUpperCase();
+  const photo = item.image_url ? '<img src="' + escapeAttribute(item.image_url) + '" alt="' + escapeAttribute(item.title) + '" loading="lazy">' : escapeHtml(initials);
+  return '<article class="story-card carousel-slide"><span class="quote-mark">“</span><blockquote>' + escapeHtml(item.description) + '</blockquote><div class="story-person"><div class="story-avatar' + (item.image_url ? ' has-photo' : '') + '">' + photo + '</div><span><b>' + escapeHtml(item.title) + '</b><small>' + escapeHtml(item.subtitle || 'Member testimony') + '</small></span></div></article>';
+}
+
 function safeLinks(value) {
   if (!value) return [];
   try {
@@ -274,7 +289,7 @@ function showRandomSermon(sermons, pastorTitle) {
 function showEvents(events) {
   const list = document.querySelector('.events-list');
   if (!list || !events.length) return;
-  list.innerHTML = events.slice(0, 3).map(function (event) {
+  list.innerHTML = events.slice(0, 3).map(function (event, index) {
     const date = new Date(event.event_date + 'T00:00:00');
     return '<article><div class="date"><b>' +
       String(date.getDate()).padStart(2, '0') + '</b><span>' +
@@ -282,8 +297,23 @@ function showEvents(events) {
       '</span></div><div><span class="tag gold">Event</span><h3>' +
       escapeHtml(event.title) + '</h3><p>' + escapeHtml(event.event_time) +
       ' · ' + escapeHtml(event.location || 'Church Auditorium') +
-      '</p></div><a href="#contact">↗</a></article>';
+      '</p></div><button type="button" class="event-details-button" data-event-index="' + index + '" aria-label="View details for ' + escapeAttribute(event.title) + '">↗</button></article>';
   }).join('');
+  list.querySelectorAll('[data-event-index]').forEach(button => button.addEventListener('click', () => openEventModal(events[Number(button.dataset.eventIndex)])));
+}
+
+function openEventModal(event) {
+  const modal=document.querySelector('[data-event-modal]');if(!modal||!event)return;
+  const image=modal.querySelector('[data-event-image]');
+  setText('[data-event-title]',event.title);
+  setText('[data-event-meta]',[event.event_date,event.event_time,event.location].filter(Boolean).join(' · '));
+  setText('[data-event-description]',event.description||'Join us for this special gathering at Bread of Life Divine Covenant Ministry.');
+  image.hidden=!event.image_url;
+  image.style.backgroundImage=event.image_url?'url("'+String(event.image_url).replace(/["\\]/g,'')+'")':'';
+  modal.hidden=false;document.body.classList.add('modal-open');modal.querySelector('.event-modal-close')?.focus();
+  const close=()=>{modal.hidden=true;document.body.classList.remove('modal-open');document.removeEventListener('keydown',escape)};
+  const escape=e=>{if(e.key==='Escape')close()};
+  modal.querySelector('.event-modal-close').onclick=close;modal.querySelector('.event-modal-backdrop').onclick=close;modal.querySelector('[data-event-contact]').onclick=close;document.addEventListener('keydown',escape);
 }
 
 function setText(selector, value, preserveChild) {
