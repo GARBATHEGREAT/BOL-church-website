@@ -30,6 +30,7 @@
       address: saved.church_address,
       phone: saved.church_phone,
       email: saved.church_email,
+      mapsUrl: saved.maps_url,
       youtubeChannel: saved.youtube_channel,
       instagramUrl: saved.instagram_url,
       facebookUrl: saved.facebook_url,
@@ -75,8 +76,8 @@ function applySectionSettings(saved) {
 function applySettings(settings) {
   setText('.announcement', settings.announcementText, true);
   setText('.announcement a', settings.announcementLinkText);
-  setText('.nav-meta b', settings.sundayTimes ? 'Sunday · ' + settings.sundayTimes : undefined);
-  setText('.service-pill b', settings.sundayTimes ? 'Sunday · ' + settings.sundayTimes : undefined);
+  setText('.nav-meta b', settings.sundayTimes);
+  setText('.service-pill b', settings.sundayTimes);
   setText('.hero .eyebrow', settings.heroWelcome, true);
   setText('.hero h1', settings.heroHeading, true);
   setText('.hero h1 em', settings.heroAccent);
@@ -94,6 +95,7 @@ function applySettings(settings) {
   setText('[data-pastor-title]', settings.pastorTitle);
   setText('[data-leader-name]', settings.leaderName);
   setText('[data-leader-title]', settings.leaderTitle);
+  if (settings.mapsUrl) document.querySelectorAll('[data-map-link]').forEach(function (link) { link.href = settings.mapsUrl; });
   const services = document.querySelectorAll('.service-list > div');
   if (services[0] && settings.sundayTimes) services[0].querySelector('b').textContent = settings.sundayTimes;
   if (services[1] && settings.wednesdayTime) services[1].querySelector('b').textContent = settings.wednesdayTime;
@@ -111,7 +113,6 @@ function applySettings(settings) {
   setSocialLink('x', settings.xUrl);
   setSocialLink('whatsapp', settings.whatsappUrl);
 
-  if (settings.phone) document.querySelectorAll('a[href^="tel:"]').forEach(link => { link.href = 'tel:' + settings.phone.replace(/[^+0-9]/g, ''); link.textContent = settings.phone; });
   const contact = document.querySelectorAll('.contact-details span');
   if (contact[0] && settings.address) contact[0].textContent = settings.address;
   if (contact[1] && (settings.phone || settings.email)) {
@@ -120,8 +121,6 @@ function applySettings(settings) {
 }
 
 function setSocialLink(network, value) {
-  // Missing admin values retain the configured links; an explicit empty value hides one.
-  if (value === undefined || value === null) return;
   document.querySelectorAll('[data-social="' + network + '"]').forEach(function (link) {
     link.hidden = !value;
     if (value) link.href = value;
@@ -154,7 +153,7 @@ function renderHero(items) {
   setText('.hero-content > p:not(.eyebrow)', first.description);
   const button = document.querySelector('.hero-actions .primary');
   if (button && first.button_text) setText('.hero-actions .primary .button-label', first.button_text);
-  if (button && first.button_url) button.href = first.button_url;
+  if (button && first.button_url && !button.hasAttribute('data-map-link')) button.href = first.button_url;
   if (items.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     let active = 0;
     setInterval(function () {
@@ -190,7 +189,7 @@ function renderCommunities(items) {
   const grid = document.querySelector('[data-community-grid]');
   if (!grid || !items.length) return;
   grid.innerHTML = items.map(function (item, index) {
-    return '<article class="ministry-card"><img class="community-photo" src="' + escapeAttribute(item.image_url) + '" alt="' + escapeAttribute(item.title) + '" loading="lazy"><span>' + String(index + 1).padStart(2, '0') + '</span><div class="icon">✦</div><h3>' + escapeHtml(item.title) + '</h3><p>' + escapeHtml(item.description) + '</p>' + (item.button_text ? '<a href="' + escapeAttribute(item.button_url || '#contact') + '">' + escapeHtml(item.button_text) + ' →</a>' : '') + '</article>';
+    return '<article class="ministry-card has-community-photo"><img class="community-photo" src="' + escapeAttribute(item.image_url) + '" alt="' + escapeAttribute(item.title) + '" loading="lazy"><span>' + String(index + 1).padStart(2, '0') + '</span><div class="icon">✦</div><h3>' + escapeHtml(item.title) + '</h3><p>' + escapeHtml(item.description) + '</p>' + (item.button_text ? '<a href="' + escapeAttribute(item.button_url || '#contact') + '">' + escapeHtml(item.button_text) + ' →</a>' : '') + '</article>';
   }).join('');
 }
 

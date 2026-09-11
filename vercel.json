@@ -1,14 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "outputDirectory": "public",
   "rewrites": [
-    { "source": "/", "destination": "/home.html" }
-  ],
-  "redirects": [
-    {
-      "source": "/admin",
-      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/admin",
-      "permanent": false
-    }
+    { "source": "/", "destination": "/home.html" },
+    { "source": "/admin", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/admin" },
+    { "source": "/admin/:path*", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/admin/:path*" },
+    { "source": "/signin-with-chatgpt", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/signin-with-chatgpt" },
+    { "source": "/signout-with-chatgpt", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/signout-with-chatgpt" },
+    { "source": "/callback", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/callback" },
+    { "source": "/api/admin/:path*", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/api/admin/:path*" },
+    { "source": "/media/:path*", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/media/:path*" }
   ]
 }
