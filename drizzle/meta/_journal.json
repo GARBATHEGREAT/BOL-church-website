@@ -15,6 +15,13 @@
       "when": 1788851031413,
       "tag": "0001_warm_dreadnoughts",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1789091454708,
+      "tag": "0002_busy_jack_flag",
+      "breakpoints": true
     }
   ]
 }

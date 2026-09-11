@@ -7,7 +7,7 @@ The public church website and private administration dashboard are kept separate
 | Location | What it controls |
 | --- | --- |
 | `public/home.html` | Public homepage sections and wording |
-| `public/site-settings.js` | Church name, pastor, contacts, service time and YouTube link |
+| `public/site-settings.js` | Safe fallback values used before Admin settings load |
 | `public/assets/css/` | Public website colors, spacing and responsive design |
 | `public/assets/images/` | Logo and replaceable local pictures |
 | `public/assets/images/ministry/` | Leadership and church-family photos |
@@ -18,7 +18,7 @@ The public church website and private administration dashboard are kept separate
 | `drizzle/` | Database migrations |
 | `.openai/hosting.json` | Live Sites hosting and database binding |
 
-For normal church detail changes, edit only `public/site-settings.js` or use the Admin dashboard. You usually do not need to edit the other folders.
+For normal updates, use the Admin dashboard. You do not need to edit source code to manage text, images, pastors, communities, slides, events, videos, service times, social links or contact details.
 
 ## Run it on your computer
 
@@ -78,12 +78,22 @@ Return to the terminal and press:
 Ctrl + C
 ```
 
-## Make simple changes
+## Make changes
+
+Open `/admin` and sign in with the approved administrator email. The dashboard is divided into clear pages:
+
+- **Website editor:** service times, homepage wording, Family Reached counters, contact details, maps, giving and social media.
+- **Hero slides, Growing in the Word, Pastors, Communities and Come As You Are:** add unlimited entries, upload images, save edits, reorder, show/hide or delete.
+- **YouTube videos and Events:** add, edit, show/hide and delete repeatable content.
+- **Messages:** receive and update prayer requests, visit notices and enquiries.
+
+Uploaded JPG, PNG, WebP and GIF files may be up to 8 MB. The public layout preserves their aspect ratio and crops them neatly without stretching.
+
+### Optional fallback changes
 
 Open `public/site-settings.js`. Change only the words between quotation marks:
 
 ```js
-pastorName: "Pastor John",
 phone: "+234 800 000 0000",
 youtubeChannel: "https://youtube.com/@bread_of_life_dcm"
 ```
@@ -92,10 +102,7 @@ Save the file and refresh the browser. Changes stored through the Admin dashboar
 
 ### Replace the logo
 
-Replace both files below with your new PNG while keeping the same filenames:
-
-- `public/logo.png`
-- `public/assets/images/bread-of-life-logo.png`
+Replace `public/assets/images/bread-of-life-logo.webp` with an optimized WebP logo using the same filename, or manage ordinary section photographs through Admin.
 
 ### Change colors
 
@@ -124,7 +131,7 @@ Never upload passwords, API keys, login tokens or private visitor information to
 - The downloaded project uses a local database. It does not download private information from the live website.
 - The live database is managed by the hosting platform.
 - YouTube videos can be added from the Admin dashboard using a normal YouTube video link.
-- YouTube, Instagram, Facebook and TikTok links can be changed under **Website editor → Church contact & social media**.
+- YouTube, Instagram, Facebook, TikTok, X and WhatsApp links can be changed under **Website editor → Social media**. Empty links are hidden automatically.
 - If the database tables change, run `npm run db:generate`, inspect the new migration, then run `npm run db:setup`.
 
 ## Website versions

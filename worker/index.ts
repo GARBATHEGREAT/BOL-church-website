@@ -5,6 +5,7 @@ import handler from "vinext/server/app-router-entry";
 interface Env {
   ASSETS: Fetcher;
   DB: D1Database;
+  MEDIA: R2Bucket;
   IMAGES: {
     input(stream: ReadableStream): {
       transform(options: Record<string, unknown>): {
@@ -31,6 +32,19 @@ const worker = {
 
     if (url.pathname === "/") {
       return env.ASSETS.fetch(new Request(new URL("/home.html", request.url), {headers:request.headers}));
+    }
+
+    if (url.pathname.startsWith("/media/")) {
+      const key = decodeURIComponent(url.pathname.slice(7));
+      if (!key || key.includes("..")) return new Response("Not found", { status: 404 });
+      const object = await env.MEDIA.get(key);
+      if (!object) return new Response("Not found", { status: 404 });
+      const headers = new Headers();
+      object.writeHttpMetadata(headers);
+      headers.set("etag", object.httpEtag);
+      headers.set("cache-control", "public, max-age=31536000, immutable");
+      headers.set("x-content-type-options", "nosniff");
+      return new Response(object.body, { headers });
     }
 
     if (url.pathname === "/_vinext/image") {
