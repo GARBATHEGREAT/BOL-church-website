@@ -212,6 +212,10 @@ html,body{overflow-x:clip}
 html[data-hero-effect] .hero .eyebrow,html[data-hero-effect] .hero-content>p:not(.eyebrow),html[data-hero-effect] .hero-actions,html[data-hero-effect] .hero-proof{animation-duration:calc(var(--hero-motion-duration,1.2s) * .72)}
 html[data-hero-effect] .hero h1{animation-duration:var(--hero-motion-duration,1.2s)}
 html[data-hero-effect="graceful"] .hero h1{animation-name:heroHeadlineIn}
+html[data-hero-effect="cinematic"] .hero h1{animation-name:heroCinematicReveal}
+html[data-hero-effect="zoom"] .hero h1{animation-name:heroWelcomeZoom}
+html[data-hero-effect="focus"] .hero h1{animation-name:heroFocusReveal}
+html[data-hero-effect="rise"] .hero h1{animation-name:heroLayeredRise}
 html[data-hero-effect="fade"] .hero h1{animation-name:heroSoftFade}
 html[data-hero-effect="slide"] .hero h1{animation-name:heroGentleSlide}
 html[data-hero-effect="glow"] .hero h1{animation-name:heroWarmGlow}
@@ -219,9 +223,28 @@ html[data-hero-effect="none"] .hero h1,html[data-hero-effect="none"] .hero h1 em
 html[data-hero-effect] .hero h1 em{animation:heroAccentIn calc(var(--hero-motion-duration,1.2s) * .82) cubic-bezier(.22,1,.36,1) .28s both}
 html[data-hero-repeat="continuous"] .hero h1 em{animation:heroAccentIn calc(var(--hero-motion-duration,1.2s) * .82) cubic-bezier(.22,1,.36,1) .28s both,heroAccentGlow calc(var(--hero-motion-duration,1.2s) * 4) ease-in-out 1.4s infinite}
 html[data-hero-intensity="standard"]{--hero-motion-distance:34px;--hero-motion-shift:26px}html[data-hero-intensity="soft"]{--hero-motion-distance:20px;--hero-motion-shift:15px}
+html[data-hero-intensity="bold"]{--hero-motion-distance:54px;--hero-motion-shift:44px}
+@keyframes heroCinematicReveal{from{opacity:0;transform:translateY(var(--hero-motion-distance,34px)) scale(.94);filter:blur(8px);clip-path:inset(0 0 100%)}60%{filter:blur(0)}to{opacity:1;transform:none;filter:none;clip-path:inset(0)}}
+@keyframes heroWelcomeZoom{from{opacity:0;transform:scale(.78);filter:blur(5px)}70%{transform:scale(1.025);filter:none}to{opacity:1;transform:none;filter:none}}
+@keyframes heroFocusReveal{from{opacity:0;filter:blur(16px);letter-spacing:.035em;transform:scale(1.045)}to{opacity:1;filter:none;letter-spacing:normal;transform:none}}
+@keyframes heroLayeredRise{from{opacity:0;transform:translate3d(0,var(--hero-motion-distance,34px),0);text-shadow:0 20px 35px rgba(0,0,0,.4)}to{opacity:1;transform:none;text-shadow:none}}
 @keyframes heroSoftFade{from{opacity:0;transform:translateY(var(--hero-motion-distance,20px))}to{opacity:1;transform:none}}
 @keyframes heroGentleSlide{from{opacity:0;transform:translateX(calc(var(--hero-motion-shift,15px) * -1));filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
 @keyframes heroWarmGlow{from{opacity:0;transform:scale(.985);text-shadow:0 0 0 transparent}to{opacity:1;transform:none;text-shadow:0 8px 32px rgba(255,192,86,.18)}}
+html[data-hero-welcome-effect] .hero .eyebrow{position:relative;display:flex;width:max-content;max-width:100%;animation-duration:calc(var(--hero-motion-duration,1.2s) * .8)}
+html[data-hero-welcome-effect="goldSweep"] .hero .eyebrow{animation-name:heroWelcomeSweep}
+html[data-hero-welcome-effect="welcomeRise"] .hero .eyebrow{animation-name:heroWelcomeRise}
+html[data-hero-welcome-effect="letterOpen"] .hero .eyebrow{animation-name:heroLetterOpen}
+html[data-hero-welcome-effect="softPulse"] .hero .eyebrow{animation-name:heroWelcomePulse}
+html[data-hero-welcome-effect="none"] .hero .eyebrow{animation:none!important}
+@keyframes heroWelcomeSweep{from{opacity:0;transform:translateX(-26px);filter:blur(4px);background-size:0 2px}to{opacity:1;transform:none;filter:none;background-size:100% 2px}}
+@keyframes heroWelcomeRise{from{opacity:0;transform:translateY(22px) scale(.96)}70%{transform:translateY(-2px) scale(1.01)}to{opacity:1;transform:none}}
+@keyframes heroLetterOpen{from{opacity:0;letter-spacing:.04em;filter:blur(3px)}to{opacity:1;letter-spacing:.22em;filter:none}}
+@keyframes heroWelcomePulse{from{opacity:0;transform:scale(.86);text-shadow:0 0 0 transparent}70%{transform:scale(1.04);text-shadow:0 0 24px rgba(255,192,86,.55)}to{opacity:1;transform:none}}
+html[data-hero-welcome-effect="goldSweep"] .hero .eyebrow{padding-bottom:7px;background:linear-gradient(#ffc056,#ffc056) left bottom/100% 2px no-repeat}
+html[data-hero-repeat="continuous"][data-hero-welcome-effect="goldSweep"] .hero .eyebrow{animation:heroWelcomeSweep calc(var(--hero-motion-duration,1.2s) * .8) cubic-bezier(.22,1,.36,1) both,heroWelcomeBreathe calc(var(--hero-motion-duration,1.2s) * 3.6) ease-in-out 1.6s infinite}
+html[data-hero-repeat="continuous"][data-hero-welcome-effect="softPulse"] .hero .eyebrow{animation:heroWelcomePulse calc(var(--hero-motion-duration,1.2s) * .8) ease both,heroWelcomeBreathe calc(var(--hero-motion-duration,1.2s) * 3.2) ease-in-out 1.5s infinite}
+@keyframes heroWelcomeBreathe{0%,100%{transform:translateY(0);text-shadow:0 0 0 transparent}50%{transform:translateY(-3px);text-shadow:0 4px 24px rgba(255,192,86,.52)}}
 .scroll-reveal:not(.visible) h2 em{opacity:0;transform:translateX(12px)}
 .word-slide h3,.leader-card h3,.ministry-card h3,.message-copy h3,.events-list h3,.visit-slide h3{transition:transform .28s cubic-bezier(.22,1,.36,1),color .28s ease}
 .word-slide:hover h3,.leader-card:hover h3,.ministry-card:hover h3,.video-grid:hover .message-copy h3,.events-list article:hover h3,.visit-slide:hover h3{transform:translateX(4px)}

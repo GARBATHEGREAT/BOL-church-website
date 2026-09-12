@@ -48,6 +48,7 @@ async function loadCmsContent() {
       ,heroAnimationDuration: saved.hero_animation_duration
       ,heroAnimationRepeat: saved.hero_animation_repeat
       ,heroAnimationIntensity: saved.hero_animation_intensity
+      ,heroWelcomeEffect: saved.hero_welcome_effect
     });
     applySectionSettings(saved);
     applyImpact(saved);
@@ -159,12 +160,15 @@ function applySettings(settings) {
 }
 
 function applyHeroAnimation(settings) {
-  const allowedEffects=['graceful','fade','slide','glow','none'];
+  const allowedEffects=['cinematic','graceful','zoom','focus','rise','fade','slide','glow','none'];
   const effect=allowedEffects.includes(settings.heroTextEffect)?settings.heroTextEffect:'graceful';
+  const allowedWelcomeEffects=['goldSweep','welcomeRise','letterOpen','softPulse','none'];
+  const welcomeEffect=allowedWelcomeEffects.includes(settings.heroWelcomeEffect)?settings.heroWelcomeEffect:'goldSweep';
   const duration=Math.min(2.5,Math.max(.6,Number(settings.heroAnimationDuration)||1.2));
   document.documentElement.dataset.heroEffect=effect;
+  document.documentElement.dataset.heroWelcomeEffect=welcomeEffect;
   document.documentElement.dataset.heroRepeat=settings.heroAnimationRepeat==='continuous'?'continuous':'once';
-  document.documentElement.dataset.heroIntensity=settings.heroAnimationIntensity==='standard'?'standard':'soft';
+  document.documentElement.dataset.heroIntensity=['soft','standard','bold'].includes(settings.heroAnimationIntensity)?settings.heroAnimationIntensity:'standard';
   document.documentElement.style.setProperty('--hero-motion-duration',duration+'s');
 }
 
