@@ -5,7 +5,7 @@ const MAX_BYTES=8*1024*1024;
 const TYPES=new Set(['image/jpeg','image/png','image/webp','image/gif']);
 
 export async function POST(request:Request){
- if(!await isAdmin())return Response.json({error:'Forbidden'},{status:403});
+ if(!await isAdmin(request.headers))return Response.json({error:'Your admin session has expired. Please sign in again.'},{status:403});
  const form=await request.formData();
  const file=form.get('image');
  if(!(file instanceof File))return Response.json({error:'Choose an image first.'},{status:400});
