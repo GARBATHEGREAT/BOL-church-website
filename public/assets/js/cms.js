@@ -337,10 +337,19 @@ function openEventModal(event) {
   setText('[data-event-description]',event.description||'Join us for this special gathering at Bread of Life Divine Covenant Ministry.');
   image.hidden=!event.image_url;
   image.style.backgroundImage=event.image_url?'url("'+String(event.image_url).replace(/["\\]/g,'')+'")':'';
+  renderEventGallery(modal,event);
   modal.hidden=false;document.body.classList.add('modal-open');modal.querySelector('.event-modal-close')?.focus();
   const close=()=>{modal.hidden=true;document.body.classList.remove('modal-open');document.removeEventListener('keydown',escape)};
   const escape=e=>{if(e.key==='Escape')close()};
   modal.querySelector('.event-modal-close').onclick=close;modal.querySelector('.event-modal-backdrop').onclick=close;modal.querySelector('[data-event-contact]').onclick=close;document.addEventListener('keydown',escape);
+}
+
+function renderEventGallery(modal,event){
+  const gallery=modal.querySelector('[data-event-gallery]'),viewer=modal.querySelector('[data-event-media-viewer]'),stage=modal.querySelector('[data-media-stage]');if(!gallery||!viewer||!stage)return;
+  const media=Array.isArray(event.media)?event.media:[];gallery.hidden=!media.length;gallery.innerHTML=media.map(function(item,index){const url=escapeAttribute(item.url),caption=escapeAttribute(item.caption||event.title||'Event media');return '<article><button type="button" class="event-media-thumb" data-media-index="'+index+'" aria-label="Open '+caption+'">'+(item.media_type==='video'?'<video src="'+url+'" preload="metadata" muted playsinline></video><i>▶</i>':'<img src="'+url+'" alt="'+caption+'" loading="lazy">')+'</button>'+(item.media_type==='image'?'<a class="event-download" href="'+url+'" download target="_blank" rel="noopener">Download ↓</a>':'')+'</article>'}).join('');
+  const closeViewer=()=>{viewer.hidden=true;stage.innerHTML=''};
+  gallery.querySelectorAll('[data-media-index]').forEach(button=>button.addEventListener('click',()=>{const item=media[Number(button.dataset.mediaIndex)],url=escapeAttribute(item.url),caption=escapeAttribute(item.caption||event.title||'Event media');stage.innerHTML=item.media_type==='video'?'<video src="'+url+'" controls autoplay playsinline></video>':'<img src="'+url+'" alt="'+caption+'"><a href="'+url+'" download target="_blank" rel="noopener">Download full photo ↓</a>';viewer.hidden=false}));
+  modal.querySelector('[data-media-close]').onclick=closeViewer;viewer.onclick=e=>{if(e.target===viewer)closeViewer()};
 }
 
 function setText(selector, value, preserveChild) {
