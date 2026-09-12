@@ -288,7 +288,15 @@ function showRandomSermon(sermons, pastorTitle) {
 
 function showEvents(events) {
   const list = document.querySelector('.events-list');
-  if (!list || !events.length) return;
+  if (!list) return;
+  if (!events.length) {
+    list.querySelectorAll('[data-static-event]').forEach(button => button.addEventListener('click', () => {
+      const card=button.closest('article'),date=card.querySelector('.date');
+      const details=(card.querySelector('p')?.textContent||'').split(' · ');
+      openEventModal({title:card.querySelector('h3')?.textContent||'Church event',event_date:[date?.querySelector('b')?.textContent,date?.querySelector('span')?.textContent].filter(Boolean).join(' '),event_time:details[0],location:details.slice(1).join(' · ')});
+    }));
+    return;
+  }
   list.innerHTML = events.slice(0, 3).map(function (event, index) {
     const date = new Date(event.event_date + 'T00:00:00');
     return '<article><div class="date"><b>' +
