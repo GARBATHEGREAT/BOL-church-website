@@ -1,0 +1,12 @@
+{
+  "name": "Bread of Life Divine Covenant Ministry",
+  "short_name": "Bread of Life DCM",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#031a3d",
+  "icons": [
+    { "src": "/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/logo-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

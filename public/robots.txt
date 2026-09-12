@@ -1,9 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /login
-Disallow: /api/
-Disallow: /private
-Disallow: /auth/
 
 Sitemap: https://breadoflifedcm.org/sitemap.xml
