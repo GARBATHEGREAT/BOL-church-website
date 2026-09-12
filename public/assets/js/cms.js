@@ -44,6 +44,10 @@ async function loadCmsContent() {
       tiktokUrl: saved.tiktok_url,
       xUrl: saved.x_url,
       whatsappUrl: saved.whatsapp_url
+      ,heroTextEffect: saved.hero_text_effect
+      ,heroAnimationDuration: saved.hero_animation_duration
+      ,heroAnimationRepeat: saved.hero_animation_repeat
+      ,heroAnimationIntensity: saved.hero_animation_intensity
     });
     applySectionSettings(saved);
     applyImpact(saved);
@@ -104,6 +108,7 @@ function applySectionSettings(saved) {
 }
 
 function applySettings(settings) {
+  applyHeroAnimation(settings);
   const announcement = [settings.announcementText, settings.sundayTimes]
     .filter(Boolean)
     .join(' · ');
@@ -151,6 +156,16 @@ function applySettings(settings) {
   if (contact[1] && (settings.phone || settings.email)) {
     contact[1].innerHTML = escapeHtml(settings.phone || '') + '<br>' + escapeHtml(settings.email || '');
   }
+}
+
+function applyHeroAnimation(settings) {
+  const allowedEffects=['graceful','fade','slide','glow','none'];
+  const effect=allowedEffects.includes(settings.heroTextEffect)?settings.heroTextEffect:'graceful';
+  const duration=Math.min(2.5,Math.max(.6,Number(settings.heroAnimationDuration)||1.2));
+  document.documentElement.dataset.heroEffect=effect;
+  document.documentElement.dataset.heroRepeat=settings.heroAnimationRepeat==='continuous'?'continuous':'once';
+  document.documentElement.dataset.heroIntensity=settings.heroAnimationIntensity==='standard'?'standard':'soft';
+  document.documentElement.style.setProperty('--hero-motion-duration',duration+'s');
 }
 
 function setSocialLink(network, value) {

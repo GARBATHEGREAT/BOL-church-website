@@ -209,6 +209,19 @@ html,body{overflow-x:clip}
 .scroll-reveal:not(.visible) h2{opacity:0;transform:translateY(20px)}
 .scroll-reveal h2 em{display:inline-block;transition:opacity .62s ease,transform .72s cubic-bezier(.22,1,.36,1);transition-delay:.2s}
 .scroll-reveal.visible h2 em{animation:sectionAccentBreathe 5s ease-in-out .9s infinite}@keyframes sectionAccentBreathe{0%,100%{text-shadow:0 0 0 transparent;transform:translateY(0)}50%{text-shadow:0 7px 22px rgba(8,124,61,.16);transform:translateY(-2px)}}
+html[data-hero-effect] .hero .eyebrow,html[data-hero-effect] .hero-content>p:not(.eyebrow),html[data-hero-effect] .hero-actions,html[data-hero-effect] .hero-proof{animation-duration:calc(var(--hero-motion-duration,1.2s) * .72)}
+html[data-hero-effect] .hero h1{animation-duration:var(--hero-motion-duration,1.2s)}
+html[data-hero-effect="graceful"] .hero h1{animation-name:heroHeadlineIn}
+html[data-hero-effect="fade"] .hero h1{animation-name:heroSoftFade}
+html[data-hero-effect="slide"] .hero h1{animation-name:heroGentleSlide}
+html[data-hero-effect="glow"] .hero h1{animation-name:heroWarmGlow}
+html[data-hero-effect="none"] .hero h1,html[data-hero-effect="none"] .hero h1 em,html[data-hero-effect="none"] .hero .eyebrow,html[data-hero-effect="none"] .hero-content>p:not(.eyebrow),html[data-hero-effect="none"] .hero-actions,html[data-hero-effect="none"] .hero-proof{animation:none!important}
+html[data-hero-effect] .hero h1 em{animation:heroAccentIn calc(var(--hero-motion-duration,1.2s) * .82) cubic-bezier(.22,1,.36,1) .28s both}
+html[data-hero-repeat="continuous"] .hero h1 em{animation:heroAccentIn calc(var(--hero-motion-duration,1.2s) * .82) cubic-bezier(.22,1,.36,1) .28s both,heroAccentGlow calc(var(--hero-motion-duration,1.2s) * 4) ease-in-out 1.4s infinite}
+html[data-hero-intensity="standard"]{--hero-motion-distance:34px;--hero-motion-shift:26px}html[data-hero-intensity="soft"]{--hero-motion-distance:20px;--hero-motion-shift:15px}
+@keyframes heroSoftFade{from{opacity:0;transform:translateY(var(--hero-motion-distance,20px))}to{opacity:1;transform:none}}
+@keyframes heroGentleSlide{from{opacity:0;transform:translateX(calc(var(--hero-motion-shift,15px) * -1));filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+@keyframes heroWarmGlow{from{opacity:0;transform:scale(.985);text-shadow:0 0 0 transparent}to{opacity:1;transform:none;text-shadow:0 8px 32px rgba(255,192,86,.18)}}
 .scroll-reveal:not(.visible) h2 em{opacity:0;transform:translateX(12px)}
 .word-slide h3,.leader-card h3,.ministry-card h3,.message-copy h3,.events-list h3,.visit-slide h3{transition:transform .28s cubic-bezier(.22,1,.36,1),color .28s ease}
 .word-slide:hover h3,.leader-card:hover h3,.ministry-card:hover h3,.video-grid:hover .message-copy h3,.events-list article:hover h3,.visit-slide:hover h3{transform:translateX(4px)}
