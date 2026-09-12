@@ -45,11 +45,11 @@
 .carousel-viewport{overflow:hidden;border-radius:10px;touch-action:pan-y}
 .carousel-track{display:flex;transform:translate3d(0,0,0);transition:transform .7s cubic-bezier(.22,1,.36,1);will-change:transform}
 .carousel-slide{flex:0 0 calc(100% / var(--slides));min-width:0}
-.carousel-arrow{position:absolute;z-index:5;top:50%;width:52px;height:52px;border:1px solid rgba(255,255,255,.78);border-radius:50%;background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(247,245,239,.88));color:var(--blue);box-shadow:0 12px 34px rgba(3,26,61,.24),inset 0 0 0 4px rgba(255,192,86,.14);backdrop-filter:blur(12px);cursor:pointer;transform:translateY(-50%);font-size:19px;font-weight:800;transition:transform .25s,background .25s,color .25s,box-shadow .25s}
-.carousel-arrow:hover{background:linear-gradient(145deg,#0a8745,#056b34);color:#fff;box-shadow:0 15px 38px rgba(5,107,52,.34),inset 0 0 0 4px rgba(255,255,255,.12);transform:translateY(-50%) scale(1.08)}
+.carousel-arrow{position:absolute;z-index:5;top:50%;width:58px;height:58px;border:2px solid rgba(255,192,86,.72);border-radius:50%;background:radial-gradient(circle at 35% 28%,#fff 0 18%,#faf7ee 48%,#e9efe9 100%);color:var(--blue);box-shadow:0 15px 38px rgba(3,26,61,.28),inset 0 0 0 5px rgba(255,255,255,.7),inset 0 -8px 18px rgba(6,40,93,.08);backdrop-filter:blur(12px);cursor:pointer;transform:translateY(-50%);font-size:22px;font-weight:800;line-height:1;transition:transform .3s cubic-bezier(.22,1,.36,1),background .25s,color .25s,box-shadow .3s}
+.carousel-arrow:hover,.carousel-arrow:focus-visible{background:radial-gradient(circle at 35% 28%,#12a054,#087c3d 58%,#04592c);border-color:#ffc056;color:#fff;box-shadow:0 18px 44px rgba(5,107,52,.4),0 0 0 5px rgba(255,192,86,.14),inset 0 0 0 4px rgba(255,255,255,.13);transform:translateY(-50%) scale(1.12) rotate(-4deg);outline:none}.carousel-next:hover,.carousel-next:focus-visible{transform:translateY(-50%) scale(1.12) rotate(4deg)}
 .carousel-arrow:disabled{opacity:.35;cursor:default}
 .carousel-arrow:not(:disabled){animation:carouselBeacon 2.8s ease-in-out infinite}.carousel-arrow:after{content:'';position:absolute;inset:-6px;border:1px solid rgba(255,192,86,.48);border-radius:50%;opacity:0;animation:carouselRing 2.8s ease-out infinite}.carousel-arrow:hover,.carousel-arrow:focus-visible{animation:none}.carousel-arrow:hover:after,.carousel-arrow:focus-visible:after{animation:none}
-@keyframes carouselBeacon{0%,76%,100%{box-shadow:0 12px 34px rgba(3,26,61,.24),inset 0 0 0 4px rgba(255,192,86,.14)}84%{box-shadow:0 12px 38px rgba(3,26,61,.3),0 0 0 7px rgba(255,192,86,.13),inset 0 0 0 4px rgba(255,192,86,.2)}}@keyframes carouselRing{0%,72%{transform:scale(.82);opacity:0}82%{opacity:.65}100%{transform:scale(1.28);opacity:0}}
+@keyframes carouselBeacon{0%,66%,100%{box-shadow:0 15px 38px rgba(3,26,61,.28),inset 0 0 0 5px rgba(255,255,255,.7),inset 0 -8px 18px rgba(6,40,93,.08)}76%{box-shadow:0 18px 44px rgba(3,26,61,.34),0 0 0 8px rgba(255,192,86,.16),inset 0 0 0 5px rgba(255,255,255,.82)}}@keyframes carouselRing{0%,62%{transform:scale(.78);opacity:0}74%{opacity:.75}100%{transform:scale(1.38);opacity:0}}
 .carousel-prev{left:-24px}.carousel-next{right:-24px}
 .carousel-dots{display:flex;justify-content:center;gap:8px;margin-top:22px}
 .carousel-dots button{width:8px;height:8px;padding:0;border:0;border-radius:99px;background:#bdc9c2;cursor:pointer;transition:width .25s,background .25s}
@@ -74,7 +74,7 @@
 .visit-slide{position:relative;height:640px;overflow:hidden;background:var(--blue-deep);color:#fff}
 .visit-slide>div{padding:40px}.visit-slide h3{font-size:clamp(2.4rem,4.4vw,4.2rem)}
 .visit-slide a{display:inline-flex;margin-top:20px;padding:12px 18px;border-radius:99px;background:#ffc056;color:var(--blue);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
-.visit-carousel .carousel-prev{left:18px}.visit-carousel .carousel-next{right:18px}.visit-carousel .carousel-arrow{top:42px;transform:none}.visit-carousel .carousel-arrow:hover{transform:scale(1.06)}
+.visit-carousel .carousel-prev{left:18px}.visit-carousel .carousel-next{right:18px}.visit-carousel .carousel-arrow{top:42px;transform:none}.visit-carousel .carousel-arrow:hover,.visit-carousel .carousel-arrow:focus-visible{transform:scale(1.12) rotate(-4deg)}.visit-carousel .carousel-next:hover,.visit-carousel .carousel-next:focus-visible{transform:scale(1.12) rotate(4deg)}
 .hero-backgrounds,.hero-bg{position:absolute;inset:0}.hero-bg{opacity:0;background-size:cover;background-position:center 38%;transition:opacity 1s ease}.hero-bg.active{opacity:1}
 .ministry-card{isolation:isolate;color:#fff;background:var(--blue-deep)}
 .ministry-card:before{opacity:.7!important;z-index:-1}
@@ -196,23 +196,25 @@ html,body{overflow-x:clip}
 /* Version 25: quiet, purposeful motion for key editorial typography. */
 .hero .eyebrow{animation:heroCopyIn .65s cubic-bezier(.22,1,.36,1) .08s both}
 .hero h1{animation:heroHeadlineIn .9s cubic-bezier(.22,1,.36,1) .16s both}
-.hero h1 em{display:inline-block;animation:heroAccentIn .85s cubic-bezier(.22,1,.36,1) .34s both}
+.hero h1 em{display:inline-block;animation:heroAccentIn .85s cubic-bezier(.22,1,.36,1) .34s both,heroAccentGlow 4.2s ease-in-out 1.3s infinite}
 .hero-content>p:not(.eyebrow){animation:heroCopyIn .72s cubic-bezier(.22,1,.36,1) .46s both}
 .hero-actions{animation:heroCopyIn .72s cubic-bezier(.22,1,.36,1) .58s both}
 .hero-proof{animation:heroCopyIn .72s cubic-bezier(.22,1,.36,1) .68s both}
 @keyframes heroHeadlineIn{from{opacity:0;transform:translateY(28px);clip-path:inset(0 0 100% 0)}to{opacity:1;transform:none;clip-path:inset(0)}}
 @keyframes heroAccentIn{from{opacity:0;transform:translate3d(18px,12px,0)}to{opacity:1;transform:none}}
 @keyframes heroCopyIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes heroAccentGlow{0%,100%{text-shadow:0 0 0 rgba(255,192,86,0)}45%{text-shadow:0 7px 28px rgba(255,192,86,.3);transform:translateY(-1px)}55%{text-shadow:0 9px 34px rgba(255,192,86,.4);transform:translateY(-2px)}}
 
 .scroll-reveal h2{transition:opacity .72s cubic-bezier(.22,1,.36,1),transform .72s cubic-bezier(.22,1,.36,1);transition-delay:.08s}
 .scroll-reveal:not(.visible) h2{opacity:0;transform:translateY(20px)}
 .scroll-reveal h2 em{display:inline-block;transition:opacity .62s ease,transform .72s cubic-bezier(.22,1,.36,1);transition-delay:.2s}
+.scroll-reveal.visible h2 em{animation:sectionAccentBreathe 5s ease-in-out .9s infinite}@keyframes sectionAccentBreathe{0%,100%{text-shadow:0 0 0 transparent;transform:translateY(0)}50%{text-shadow:0 7px 22px rgba(8,124,61,.16);transform:translateY(-2px)}}
 .scroll-reveal:not(.visible) h2 em{opacity:0;transform:translateX(12px)}
 .word-slide h3,.leader-card h3,.ministry-card h3,.message-copy h3,.events-list h3,.visit-slide h3{transition:transform .28s cubic-bezier(.22,1,.36,1),color .28s ease}
 .word-slide:hover h3,.leader-card:hover h3,.ministry-card:hover h3,.video-grid:hover .message-copy h3,.events-list article:hover h3,.visit-slide:hover h3{transform:translateX(4px)}
 
 @media(prefers-reduced-motion:reduce){
-  .hero .eyebrow,.hero h1,.hero h1 em,.hero-content>p:not(.eyebrow),.hero-actions,.hero-proof{animation:none!important}
+  .hero .eyebrow,.hero h1,.hero h1 em,.hero-content>p:not(.eyebrow),.hero-actions,.hero-proof,.scroll-reveal.visible h2 em{animation:none!important}
   .scroll-reveal h2,.scroll-reveal h2 em,.word-slide h3,.leader-card h3,.ministry-card h3,.message-copy h3,.events-list h3,.visit-slide h3{transition:none!important}
   .scroll-reveal:not(.visible) h2,.scroll-reveal:not(.visible) h2 em{opacity:1;transform:none}
 }
