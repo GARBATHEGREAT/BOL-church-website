@@ -15,6 +15,47 @@ html,body{max-width:100%;overflow-x:clip}
 .events-gallery-grid a:hover img,.events-gallery-grid a:hover video{transform:scale(1.045)}
 .preview-play{position:absolute;inset:50% auto auto 50%;translate:-50% -50%;width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:#ffc056;color:#031a3d;box-shadow:0 10px 28px rgba(0,0,0,.3)}
 
+/* Desktop proportions: keep the complete welcome composition inside the viewport. */
+@media(min-width:901px){
+  .site-header{width:100%;grid-template-columns:auto auto minmax(0,1fr);gap:clamp(16px,1.7vw,28px)!important}
+  .site-header nav{min-width:0;max-width:100%;gap:clamp(12px,1.3vw,24px)!important}
+  .nav-links{min-width:0;gap:clamp(13px,1.35vw,25px)!important}
+  .nav-actions{flex:0 0 auto}
+  .hero{height:calc(100svh - 129px)!important;min-height:610px!important;max-height:820px!important}
+  .hero-content{width:min(720px,53vw)!important;max-width:720px!important}
+  .hero h1{font-size:clamp(4.35rem,6.8vw,7.15rem)!important;line-height:.86!important}
+  .hero-emblem{right:clamp(42px,7vw,132px)!important;width:clamp(270px,25vw,350px)!important}
+  .service-pill{right:clamp(32px,5vw,96px)!important;bottom:18px!important}
+  .prayer-float{bottom:max(18px,env(safe-area-inset-bottom))}
+}
+
+/* Reduce header density before it can collide. */
+@media(max-width:1450px) and (min-width:901px){
+  .site-header{grid-template-columns:auto minmax(0,1fr)!important;padding-inline:clamp(24px,4vw,58px)!important}
+  .nav-meta{display:none!important}
+  .site-header nav{justify-content:flex-end}
+  .nav-links>a,.explore-toggle{font-size:10px!important;letter-spacing:.045em!important}
+  .nav-actions{gap:7px!important}
+  .nav-visit,.nav-give{padding-inline:14px!important}
+}
+
+@media(max-width:1280px) and (min-width:901px){
+  .nav-social-shortcuts{display:none!important}
+}
+
+/* Short laptop windows and browser zoom must not crop the hero footer. */
+@media(min-width:901px) and (max-height:800px){
+  .hero{height:calc(100svh - 129px)!important;min-height:540px!important;max-height:none!important}
+  .hero-content{top:49%!important;transform:translateY(-50%)!important}
+  .hero .eyebrow{margin-bottom:12px!important}
+  .hero h1{font-size:clamp(4rem,12vh,6.25rem)!important;margin-bottom:20px!important}
+  .hero-content>p:not(.eyebrow){line-height:1.55!important}
+  .hero-actions{margin-top:22px!important}
+  .hero-proof{margin-top:22px!important}
+  .hero-emblem{width:clamp(230px,23vw,310px)!important}
+  .service-pill{bottom:12px!important;padding-block:14px!important}
+}
+
 @media(max-width:1180px) and (min-width:901px){
   .site-header{grid-template-columns:minmax(210px,auto) 1fr!important;gap:18px!important;padding-inline:clamp(20px,3vw,42px)!important}
   .site-header nav,.nav-links{gap:clamp(10px,1.35vw,18px)!important}
