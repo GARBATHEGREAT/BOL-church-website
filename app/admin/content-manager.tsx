@@ -10,7 +10,7 @@ export default function ContentManager({section,title,description,items,fields,s
  const[uploading,setUploading]=useState<number|string|null>(null),[notice,setNotice]=useState('');
  async function upload(file:File,target:HTMLInputElement,id:number|string){
   setUploading(id);setNotice('');
-  try{const form=new FormData();form.append('file',file);const response=await fetch('/api/admin/upload',{method:'POST',body:form,credentials:'same-origin'});const result=await response.json().catch(()=>({}));if(!response.ok)throw new Error(result.error||'Upload failed');target.value=result.url;setNotice('Image uploaded. Save the item to publish it.')}catch(error:any){setNotice(error.message)}finally{setUploading(null)}
+  try{const form=new FormData();form.append('file',file);const response=await fetch('/api/admin/upload',{method:'POST',body:form,credentials:'same-origin'});const result=await response.json().catch(()=>({}));if(response.status===403){window.location.href='/admin?session=expired';return}if(!response.ok)throw new Error(result.error||`Could not upload ${file.name}`);target.value=result.url;setNotice('Image uploaded. Save the item to publish it.')}catch(error:any){setNotice(error.message)}finally{setUploading(null)}
  }
  async function submit(event:FormEvent<HTMLFormElement>,action:string,id?:number){
   event.preventDefault();const form=event.currentTarget;const values=Object.fromEntries(new FormData(form));await send({action,id,section,...values});if(action==='content_create')form.reset();

@@ -2,6 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     { "source": "/", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/" },
+    { "source": "/gallery", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/gallery" },
+    { "source": "/gallery/", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/gallery" },
     { "source": "/site-settings.js", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/site-settings.js" },
     { "source": "/favicon-48.png", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/favicon-48.png" },
     { "source": "/favicon-192.png", "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/favicon-192.png" },
