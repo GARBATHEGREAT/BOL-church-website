@@ -88,7 +88,7 @@ function applySectionSettings(saved) {
     ,['.quick-connect > a:nth-child(1) small','quick_1_label'],['.quick-connect > a:nth-child(1) b','quick_1_title'],['.quick-connect > a:nth-child(2) small','quick_2_label'],['.quick-connect > a:nth-child(2) b','quick_2_title'],['.quick-connect > a:nth-child(3) small','quick_3_label'],['.quick-connect > a:nth-child(3) b','quick_3_title']
     ,['.about-secondary','about_secondary_text'],['.about-link','about_link_text'],['.signature-line b','signature_text']
     ,['.verse:nth-child(1) p','verse_1_text'],['.verse:nth-child(1) span','verse_1_ref'],['.verse:nth-child(2) p','verse_2_text'],['.verse:nth-child(2) span','verse_2_ref'],['.verse:nth-child(3) p','verse_3_text'],['.verse:nth-child(3) span','verse_3_ref']
-    ,['.nav-links > a:nth-child(1)','nav_about'],['.nav-links > a:nth-child(2)','nav_messages'],['.nav-links .explore-toggle b','nav_connect'],['.nav-links > a:nth-child(4)','nav_events'],['.nav-links > a:nth-child(5)','nav_contact'],['footer > p','footer_tagline'],['.copyright','footer_copyright']
+    ,['.nav-links [data-nav="about"]','nav_about'],['.nav-links [data-nav="messages"]','nav_messages'],['.nav-links .explore-toggle b','nav_connect'],['.nav-links [data-nav="events"]','nav_events'],['.nav-links [data-nav="gallery"]','nav_gallery'],['.nav-links [data-nav="contact"]','nav_contact'],['footer > p','footer_tagline'],['.copyright','footer_copyright']
     ,['.nav-toggle em','nav_menu_label'],['.nav-actions .nav-visit','nav_visit_button'],['.explore-intro small','nav_explore_kicker'],['.explore-intro h3','nav_explore_heading'],['.explore-intro p','nav_explore_text'],['.nav-mobile-foot p','footer_tagline'],['.nav-mobile-foot > a','church_phone']
     ,['.explore-grid > a:nth-child(1) b','nav_card_1_title'],['.explore-grid > a:nth-child(1) small','nav_card_1_text'],['.explore-grid > a:nth-child(2) b','nav_card_2_title'],['.explore-grid > a:nth-child(2) small','nav_card_2_text'],['.explore-grid > a:nth-child(3) b','nav_card_3_title'],['.explore-grid > a:nth-child(3) small','nav_card_3_text'],['.explore-grid > a:nth-child(4) b','nav_card_4_title'],['.explore-grid > a:nth-child(4) small','nav_card_4_text']
   ];
@@ -337,20 +337,12 @@ function openEventModal(event) {
   setText('[data-event-description]',event.description||'Join us for this special gathering at Bread of Life Divine Covenant Ministry.');
   image.hidden=!event.image_url;
   image.style.backgroundImage=event.image_url?'url("'+String(event.image_url).replace(/["\\]/g,'')+'")':'';
-  renderEventGallery(modal,event);
   modal.hidden=false;document.body.classList.add('modal-open');modal.querySelector('.event-modal-close')?.focus();
   const close=()=>{modal.hidden=true;document.body.classList.remove('modal-open');document.removeEventListener('keydown',escape)};
   const escape=e=>{if(e.key==='Escape')close()};
   modal.querySelector('.event-modal-close').onclick=close;modal.querySelector('.event-modal-backdrop').onclick=close;modal.querySelector('[data-event-contact]').onclick=close;document.addEventListener('keydown',escape);
 }
 
-function renderEventGallery(modal,event){
-  const gallery=modal.querySelector('[data-event-gallery]'),viewer=modal.querySelector('[data-event-media-viewer]'),stage=modal.querySelector('[data-media-stage]');if(!gallery||!viewer||!stage)return;
-  const media=Array.isArray(event.media)?event.media:[];gallery.hidden=!media.length;gallery.innerHTML=media.map(function(item,index){const url=escapeAttribute(item.url),caption=escapeAttribute(item.caption||event.title||'Event media');return '<article><button type="button" class="event-media-thumb" data-media-index="'+index+'" aria-label="Open '+caption+'">'+(item.media_type==='video'?'<video src="'+url+'" preload="metadata" muted playsinline></video><i>▶</i>':'<img src="'+url+'" alt="'+caption+'" loading="lazy">')+'</button>'+(item.media_type==='image'?'<a class="event-download" href="'+url+'" download target="_blank" rel="noopener">Download ↓</a>':'')+'</article>'}).join('');
-  const closeViewer=()=>{viewer.hidden=true;stage.innerHTML=''};
-  gallery.querySelectorAll('[data-media-index]').forEach(button=>button.addEventListener('click',()=>{const item=media[Number(button.dataset.mediaIndex)],url=escapeAttribute(item.url),caption=escapeAttribute(item.caption||event.title||'Event media');stage.innerHTML=item.media_type==='video'?'<video src="'+url+'" controls autoplay playsinline></video>':'<img src="'+url+'" alt="'+caption+'"><a href="'+url+'" download target="_blank" rel="noopener">Download full photo ↓</a>';viewer.hidden=false}));
-  modal.querySelector('[data-media-close]').onclick=closeViewer;viewer.onclick=e=>{if(e.target===viewer)closeViewer()};
-}
 
 function setText(selector, value, preserveChild) {
   const element = document.querySelector(selector);
