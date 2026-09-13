@@ -1,5 +1,6 @@
 'use client';
 import {FormEvent,useState} from 'react';
+import {prepareAdminUpload} from './upload-image';
 
 export type ContentItem={id:number;section:string;title:string;subtitle:string;description:string;body:string;image_url:string;button_text:string;button_url:string;contact_links:string;sort_order:number;visible:number};
 type Field='title'|'subtitle'|'description'|'body'|'buttonText'|'buttonUrl'|'contactLinks';
@@ -10,7 +11,7 @@ export default function ContentManager({section,title,description,items,fields,s
  const[uploading,setUploading]=useState<number|string|null>(null),[notice,setNotice]=useState('');
  async function upload(file:File,target:HTMLInputElement,id:number|string){
   setUploading(id);setNotice('');
-  try{const form=new FormData();form.append('file',file);const response=await fetch('/api/admin/upload',{method:'POST',body:form,credentials:'same-origin'});const result=await response.json().catch(()=>({}));if(response.status===403){window.location.href='/admin?session=expired';return}if(!response.ok)throw new Error(result.error||`Could not upload ${file.name}`);target.value=result.url;setNotice('Image uploaded. Save the item to publish it.')}catch(error:any){setNotice(error.message)}finally{setUploading(null)}
+  try{setNotice('Preparing phone photo…');const prepared=await prepareAdminUpload(file);setNotice('Uploading image…');const form=new FormData();form.append('file',prepared);const response=await fetch('/api/admin/upload',{method:'POST',body:form,credentials:'same-origin'});const result=await response.json().catch(()=>({}));if(response.status===403){window.location.href='/admin?session=expired';return}if(!response.ok)throw new Error(result.error||`Could not upload ${file.name}`);target.value=result.url;target.dispatchEvent(new Event('input',{bubbles:true}));setNotice('Image uploaded. Click Save changes to publish it.')}catch(error:any){setNotice(error.message)}finally{setUploading(null)}
  }
  async function submit(event:FormEvent<HTMLFormElement>,action:string,id?:number){
   event.preventDefault();const form=event.currentTarget;const values=Object.fromEntries(new FormData(form));await send({action,id,section,...values});if(action==='content_create')form.reset();
@@ -30,7 +31,7 @@ export default function ContentManager({section,title,description,items,fields,s
 }
 
 function ImageField({id,value='',uploading,onUpload}:{id:number|string;value?:string;uploading:number|string|null;onUpload:(file:File,target:HTMLInputElement,id:number|string)=>void}){
- return <div className="image-editor">{value?<img src={value} alt="Current item"/>:<div className="image-placeholder">Image preview</div>}<div><label>Image URL<input name="imageUrl" defaultValue={value} placeholder="Upload an image or paste a URL"/></label><label className="upload-button">{uploading===id?'Uploading…':'Upload image'}<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>{const file=e.target.files?.[0];const url=e.currentTarget.closest('.image-editor')?.querySelector<HTMLInputElement>('input[name="imageUrl"]');if(file&&url)onUpload(file,url,id)}}/></label><small>JPG, PNG, WebP or GIF. Images are automatically cropped without distortion.</small></div></div>
+ return <div className="image-editor">{value?<img src={value} alt="Current item"/>:<div className="image-placeholder">Image preview</div>}<div><label>Image URL<input name="imageUrl" defaultValue={value} placeholder="Upload an image or paste a URL"/></label><label className="upload-button">{uploading===id?'Preparing & uploading…':'Upload image'}<input type="file" accept="image/*,.heic,.heif" disabled={uploading!==null} onChange={e=>{e.preventDefault();e.stopPropagation();const input=e.currentTarget,file=input.files?.[0];const url=input.closest('.image-editor')?.querySelector<HTMLInputElement>('input[name="imageUrl"]');if(file&&url)void onUpload(file,url,id);input.value=''}}/></label><small>Phone photos, JPG, PNG, WebP or GIF. Large photos are resized automatically without distortion.</small></div></div>
 }
 function Fields({fields,item}:{fields:Props['fields'];item?:ContentItem}){
  return <div className="item-fields">{fields.map(field=><label key={field.key}>{field.label}{field.textarea?<textarea name={field.key} rows={field.key==='body'?5:3} defaultValue={item?.[dbKey[field.key] as keyof ContentItem] as string||''} placeholder={field.placeholder}/>:<input name={field.key} defaultValue={item?.[dbKey[field.key] as keyof ContentItem] as string||''} placeholder={field.placeholder}/>}</label>)}</div>
