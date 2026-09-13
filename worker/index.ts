@@ -33,6 +33,9 @@ const worker = {
     if (url.pathname === "/") {
       return env.ASSETS.fetch(new Request(new URL("/home.html", request.url), {headers:request.headers}));
     }
+    if (url.pathname === "/gallery" || url.pathname === "/gallery/") {
+      return env.ASSETS.fetch(new Request(new URL("/gallery.html", request.url), {headers:request.headers}));
+    }
 
     if (url.pathname.startsWith("/media/")) {
       const key = decodeURIComponent(url.pathname.slice(7));
