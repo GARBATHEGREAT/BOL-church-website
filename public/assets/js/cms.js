@@ -54,6 +54,7 @@ async function loadCmsContent() {
     applyImpact(saved);
     showRandomSermon(data.sermons || [], saved.pastor_title);
     showEvents(data.events || []);
+    showGalleryPreview(data.galleryMedia || []);
     applyManagedContent(data.contentItems || []);
     // Hero slides paint their image and optional slide content. Re-apply the
     // dedicated Homepage Introduction fields last so Admin edits cannot be
@@ -341,6 +342,17 @@ function showEvents(events) {
       '</p></div><button type="button" class="event-details-button" data-event-index="' + index + '" aria-label="View details for ' + escapeAttribute(event.title) + '">↗</button></article>';
   }).join('');
   list.querySelectorAll('[data-event-index]').forEach(button => button.addEventListener('click', () => openEventModal(events[Number(button.dataset.eventIndex)])));
+}
+
+function showGalleryPreview(items) {
+  const preview=document.querySelector('[data-gallery-preview]');
+  if(!preview||!items.length)return;
+  preview.innerHTML=items.slice(0,3).map(function(item){
+    const media=item.media_type==='video'
+      ? '<video src="'+escapeAttribute(item.url)+'" muted playsinline preload="metadata"></video><span class="preview-play">▶</span>'
+      : '<img src="'+escapeAttribute(item.url)+'" alt="'+escapeAttribute(item.caption||'Bread of Life church gallery')+'" loading="lazy">';
+    return '<a href="/gallery" aria-label="Open church gallery">'+media+'</a>';
+  }).join('');
 }
 
 function openEventModal(event) {
