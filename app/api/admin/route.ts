@@ -6,20 +6,19 @@ const SECTIONS=new Set(['hero_slides','word_slides','pastors','communities','vis
 export async function GET(request:Request){
  if(!await isAdmin(request.headers))return Response.json({error:'Your admin session has expired. Please sign in again.'},{status:403});
  await ensureDefaultContent();
- await ensureEventColumns();await ensureEventMedia();
+ await ensureEventColumns();await ensureGalleryMedia();
  await ensureStoriesContent();
- const[settings,submissions,sermons,events,eventMedia,contentItems,adminRows]=await Promise.all([
+ const[settings,submissions,sermons,events,galleryMedia,contentItems,adminRows]=await Promise.all([
   env.DB.prepare('SELECT key,value FROM settings ORDER BY key').all(),
   env.DB.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIMIT 250').all(),
   env.DB.prepare('SELECT * FROM sermons ORDER BY featured DESC,id DESC').all(),
   env.DB.prepare('SELECT * FROM events ORDER BY event_date ASC').all(),
-  env.DB.prepare('SELECT * FROM event_media ORDER BY event_id,sort_order,id').all(),
+  env.DB.prepare('SELECT * FROM gallery_media ORDER BY sort_order,id').all(),
   env.DB.prepare('SELECT * FROM content_items ORDER BY section,sort_order,id').all(),
   env.DB.prepare("SELECT key FROM settings WHERE key LIKE 'admin_user:%' ORDER BY key").all()
  ]);
  const admins=[ADMIN_EMAIL,...adminRows.results.map((row:any)=>String(row.key).slice(11))];
- const mediaByEvent=new Map<number,any[]>();for(const item of eventMedia.results as any[]){const list=mediaByEvent.get(item.event_id)||[];list.push(item);mediaByEvent.set(item.event_id,list)}
- return Response.json({settings:settings.results,submissions:submissions.results,sermons:sermons.results,events:(events.results as any[]).map(event=>({...event,media:mediaByEvent.get(event.id)||[]})),contentItems:contentItems.results,admins:[...new Set(admins)]});
+ return Response.json({settings:settings.results,submissions:submissions.results,sermons:sermons.results,events:events.results,galleryMedia:galleryMedia.results,contentItems:contentItems.results,admins:[...new Set(admins)]});
 }
 
 export async function POST(req:Request){
@@ -40,20 +39,22 @@ export async function POST(req:Request){
  }else if(x.action==='edit_event'){
   await ensureEventColumns();
   await env.DB.prepare('UPDATE events SET title=?,event_date=?,event_time=?,location=?,description=?,image_url=? WHERE id=?').bind(text(x.title),text(x.eventDate),text(x.eventTime),text(x.location),text(x.description,4000),text(x.imageUrl,2000),Number(x.id)).run();
- }else if(x.action==='event_media_add'){
-  await ensureEventMedia();const eventId=Number(x.eventId),mediaType=x.mediaType==='video'?'video':'image';
-  if(!eventId||!text(x.url,2000))return Response.json({error:'Invalid event media.'},{status:400});
-  if(mediaType==='video'){const count=await env.DB.prepare("SELECT COUNT(*) total FROM event_media WHERE event_id=? AND media_type='video'").bind(eventId).first<any>();if(Number(count?.total)>=10)return Response.json({error:'This event already has the maximum of 10 videos.'},{status:400})}
-  const order=await env.DB.prepare('SELECT COALESCE(MAX(sort_order),-1)+1 next_order FROM event_media WHERE event_id=?').bind(eventId).first<any>();
-  await env.DB.prepare('INSERT INTO event_media(event_id,media_type,url,storage_key,caption,sort_order,created_at) VALUES(?,?,?,?,?,?,?)').bind(eventId,mediaType,text(x.url,2000),text(x.storageKey,1000),text(x.caption,500),order?.next_order||0,now).run();
- }else if(x.action==='event_media_delete'){
-  await ensureEventMedia();const item=await env.DB.prepare('SELECT storage_key FROM event_media WHERE id=?').bind(Number(x.id)).first<any>();
-  if(item?.storage_key)await env.MEDIA.delete(item.storage_key);await env.DB.prepare('DELETE FROM event_media WHERE id=?').bind(Number(x.id)).run();
+ }else if(x.action==='gallery_media_add'){
+  await ensureGalleryMedia();const mediaType=x.mediaType==='video'?'video':'image';
+  if(!text(x.url,2000))return Response.json({error:'Invalid gallery media.'},{status:400});
+  if(mediaType==='video'){const count=await env.DB.prepare("SELECT COUNT(*) total FROM gallery_media WHERE media_type='video'").first<any>();if(Number(count?.total)>=10)return Response.json({error:'The gallery already has the maximum of 10 videos.'},{status:400})}
+  const order=await env.DB.prepare('SELECT COALESCE(MAX(sort_order),-1)+1 next_order FROM gallery_media').first<any>();
+  await env.DB.prepare('INSERT INTO gallery_media(media_type,url,storage_key,caption,sort_order,visible,created_at) VALUES(?,?,?,?,?,1,?)').bind(mediaType,text(x.url,2000),text(x.storageKey,1000),text(x.caption,500),order?.next_order||0,now).run();
+ }else if(x.action==='gallery_media_delete'){
+  await ensureGalleryMedia();const item=await env.DB.prepare('SELECT storage_key FROM gallery_media WHERE id=?').bind(Number(x.id)).first<any>();
+  if(item?.storage_key)await env.MEDIA.delete(item.storage_key);await env.DB.prepare('DELETE FROM gallery_media WHERE id=?').bind(Number(x.id)).run();
+ }else if(x.action==='gallery_media_toggle'){
+  await ensureGalleryMedia();await env.DB.prepare('UPDATE gallery_media SET visible=? WHERE id=?').bind(x.visible?1:0,Number(x.id)).run();
  }
  else if(x.action==='toggle_event')await env.DB.prepare('UPDATE events SET published=? WHERE id=?').bind(x.visible?1:0,Number(x.id)).run();
  else if(x.action==='status')await env.DB.prepare('UPDATE submissions SET status=? WHERE id=?').bind(text(x.status),Number(x.id)).run();
  else if(x.action==='delete_sermon')await env.DB.prepare('DELETE FROM sermons WHERE id=?').bind(Number(x.id)).run();
- else if(x.action==='delete_event'){await ensureEventMedia();const media=await env.DB.prepare('SELECT storage_key FROM event_media WHERE event_id=?').bind(Number(x.id)).all();for(const item of media.results as any[])if(item.storage_key)await env.MEDIA.delete(item.storage_key);await env.DB.prepare('DELETE FROM event_media WHERE event_id=?').bind(Number(x.id)).run();await env.DB.prepare('DELETE FROM events WHERE id=?').bind(Number(x.id)).run()}
+ else if(x.action==='delete_event')await env.DB.prepare('DELETE FROM events WHERE id=?').bind(Number(x.id)).run();
  else if(x.action==='content_create')await createContent(x,now);
  else if(x.action==='content_update')await updateContent(x,now);
  else if(x.action==='content_delete')await env.DB.prepare('DELETE FROM content_items WHERE id=?').bind(Number(x.id)).run();
@@ -118,7 +119,7 @@ async function ensureEventColumns(){
   try{await env.DB.prepare(sql).run()}catch{}
  }
 }
-async function ensureEventMedia(){await env.DB.prepare("CREATE TABLE IF NOT EXISTS event_media(id INTEGER PRIMARY KEY AUTOINCREMENT,event_id INTEGER NOT NULL,media_type TEXT NOT NULL CHECK(media_type IN ('image','video')),url TEXT NOT NULL,storage_key TEXT NOT NULL DEFAULT '',caption TEXT NOT NULL DEFAULT '',sort_order INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL,FOREIGN KEY(event_id) REFERENCES events(id) ON DELETE CASCADE)").run();await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_event_media_event ON event_media(event_id,sort_order,id)').run()}
+async function ensureGalleryMedia(){await env.DB.prepare("CREATE TABLE IF NOT EXISTS gallery_media(id INTEGER PRIMARY KEY AUTOINCREMENT,media_type TEXT NOT NULL CHECK(media_type IN ('image','video')),url TEXT NOT NULL,storage_key TEXT NOT NULL DEFAULT '',caption TEXT NOT NULL DEFAULT '',sort_order INTEGER NOT NULL DEFAULT 0,visible INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL)").run()}
 
 async function ensureStoriesContent(){
  const marker=await env.DB.prepare("SELECT value FROM settings WHERE key='stories_collection_initialized'").first<any>();if(marker)return;
