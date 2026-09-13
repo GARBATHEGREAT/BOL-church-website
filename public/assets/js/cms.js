@@ -55,11 +55,25 @@ async function loadCmsContent() {
     showRandomSermon(data.sermons || [], saved.pastor_title);
     showEvents(data.events || []);
     applyManagedContent(data.contentItems || []);
+    // Hero slides paint their image and optional slide content. Re-apply the
+    // dedicated Homepage Introduction fields last so Admin edits cannot be
+    // overwritten by an older seeded hero-slide record.
+    applyHomepageIntroduction(saved);
   } catch {
     console.info('Using default website settings.');
   } finally {
     cmsRefreshInProgress = false;
   }
+}
+
+function applyHomepageIntroduction(saved) {
+  setText('.hero .eyebrow', saved.hero_welcome, true);
+  setText('.hero h1', saved.hero_heading, true);
+  setText('.hero h1 em', saved.hero_accent);
+  setText('.hero-content > p:not(.eyebrow)', saved.hero_tagline);
+  setText('.welcome-grid h2', saved.about_heading, true);
+  setText('.welcome-grid h2 em', saved.about_accent);
+  setText('.welcome-grid .lead', saved.about_text);
 }
 
 loadCmsContent();
