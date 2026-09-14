@@ -357,18 +357,28 @@ function showGalleryPreview(items) {
 
 function openEventModal(event) {
   const modal=document.querySelector('[data-event-modal]');if(!modal||!event)return;
+  const media=modal.querySelector('[data-event-media]');
   const image=modal.querySelector('[data-event-image]');
+  const download=modal.querySelector('[data-event-download]');
+  const imageUrl=String(event.image_url||'').trim();
   setText('[data-event-title]',event.title);
   setText('[data-event-meta]',[event.event_date,event.event_time,event.location].filter(Boolean).join(' · '));
   setText('[data-event-description]',event.description||'Join us for this special gathering at Bread of Life Divine Covenant Ministry.');
-  image.hidden=!event.image_url;
-  image.style.backgroundImage=event.image_url?'url("'+String(event.image_url).replace(/["\\]/g,'')+'")':'';
+  if(media) media.hidden=!imageUrl;
+  if(image){
+    if(imageUrl){image.src=imageUrl;image.alt=(event.title||'Church event')+' flyer';}
+    else{image.removeAttribute('src');image.alt='';}
+  }
+  if(download){
+    download.hidden=!imageUrl;
+    download.href=imageUrl||'#';
+    download.setAttribute('download',((event.title||'church-event').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase()||'church-event')+'-flyer');
+  }
   modal.hidden=false;document.body.classList.add('modal-open');modal.querySelector('.event-modal-close')?.focus();
   const close=()=>{modal.hidden=true;document.body.classList.remove('modal-open');document.removeEventListener('keydown',escape)};
   const escape=e=>{if(e.key==='Escape')close()};
   modal.querySelector('.event-modal-close').onclick=close;modal.querySelector('.event-modal-backdrop').onclick=close;modal.querySelector('[data-event-contact]').onclick=close;document.addEventListener('keydown',escape);
 }
-
 
 function setText(selector, value, preserveChild) {
   const element = document.querySelector(selector);
