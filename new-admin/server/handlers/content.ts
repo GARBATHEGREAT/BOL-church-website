@@ -1,0 +1,33 @@
+import{env}from'../env';import{ensureSchema}from'../db';
+
+export const dynamic='force-dynamic';
+
+const noStoreHeaders={
+ 'Cache-Control':'no-store, no-cache, must-revalidate, max-age=0',
+ 'CDN-Cache-Control':'no-store',
+ 'Vercel-CDN-Cache-Control':'no-store'
+};
+
+export async function GET(){
+ try{
+  await ensureSchema();
+  await ensureEventColumns();await ensureGalleryMedia();
+  const[s,v,e,g,c]=await Promise.all([
+   env.DB.prepare("SELECT key,value FROM settings WHERE key NOT LIKE 'admin_user:%'").all(),
+   env.DB.prepare('SELECT * FROM sermons WHERE published=1 ORDER BY featured DESC,id DESC LIMIT 12').all(),
+   env.DB.prepare("SELECT * FROM events WHERE published=1 AND event_date>=date('now') ORDER BY event_date LIMIT 12").all(),
+   env.DB.prepare('SELECT * FROM gallery_media WHERE visible=1 ORDER BY sort_order,id').all(),
+   env.DB.prepare('SELECT * FROM content_items WHERE visible=1 ORDER BY section,sort_order,id').all()
+  ]);
+  return Response.json({settings:Object.fromEntries((s.results as any[]).map(x=>[x.key,x.value])),sermons:v.results,events:e.results,galleryMedia:g.results,contentItems:c.results},{headers:noStoreHeaders});
+ }catch{
+  return Response.json({settings:{youtube_channel:'https://youtube.com/@bread_of_life_dcm'},sermons:[],events:[],contentItems:[]},{headers:noStoreHeaders});
+ }
+}
+async function ensureGalleryMedia(){await env.DB.prepare("CREATE TABLE IF NOT EXISTS gallery_media(id INTEGER PRIMARY KEY AUTOINCREMENT,media_type TEXT NOT NULL,url TEXT NOT NULL,storage_key TEXT NOT NULL DEFAULT '',caption TEXT NOT NULL DEFAULT '',sort_order INTEGER NOT NULL DEFAULT 0,visible INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL)").run()}
+
+async function ensureEventColumns(){
+ for(const sql of ["ALTER TABLE events ADD COLUMN description text NOT NULL DEFAULT ''","ALTER TABLE events ADD COLUMN image_url text NOT NULL DEFAULT ''"]){
+  try{await env.DB.prepare(sql).run()}catch{}
+ }
+}

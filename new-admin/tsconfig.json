@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "esnext", "moduleResolution": "bundler", "lib": ["dom","dom.iterable","esnext"],
+    "jsx": "react-jsx", "strict": true, "noEmit": true, "skipLibCheck": true, "esModuleInterop": true,
+    "isolatedModules": true, "allowJs": false, "types": ["node"]
+  },
+  "include": ["server", "web", "scripts"]
+}
