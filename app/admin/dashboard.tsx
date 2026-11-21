@@ -62,7 +62,7 @@ const announcementFields:[string,string,string,('text'|'area')?][]=[
  ['announce_kicker','Small heading above the title','You are invited'],
  ['announce_title','Title (first part)','A 3-Day Crusade:'],
  ['announce_title_accent','Title (highlighted part)','Let There Be Light'],
- ['announce_theme','Theme line','Genesis 1:3 · Arise, shine, for your light has come!'],
+ ['announce_theme','Theme line','Genesis 1:3 · “And God said, Let there be light: and there was light.”'],
  ['announce_when','Dates and time','25th, 26th & 27th November 2026 · 5:00 PM daily'],
  ['announce_venue','Venue','Bread of Life Auditorium, Behind LEA Primary School, Kurudu, FCT Abuja'],
  ['announce_ministering','Ministering','Sis. Josephine Garba & other anointed men of God'],
