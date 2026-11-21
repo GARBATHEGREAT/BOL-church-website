@@ -35,9 +35,9 @@ not exposed either. Re-add extra admins from Admin → Administrators. (Old mess
 until you copy any you need.)
 
 ## Deploying later (checklist – do not do until approved)
-1. Create a **Turso** database (free) → set `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` in Vercel.
-2. Create a **Vercel Blob** store → set `BLOB_READ_WRITE_TOKEN` and `BLOB_PUBLIC_URL`.
-3. Set `ADMIN_EMAIL`, `ADMIN_BOOTSTRAP_PASSWORD`, `ADMIN_SESSION_SECRET` (long random) in Vercel.
+1. **Turso** database `bol-church-db` (free Starter plan) – done: `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN` are set on the project.
+2. **Vercel Blob** store (public) – done: `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID` are set on the project.
+3. You set `ADMIN_EMAIL`, `ADMIN_BOOTSTRAP_PASSWORD`, `ADMIN_SESSION_SECRET` (long random) in Vercel.
 4. Copy `vercel/handler.ts` to `api/server.ts`; remove `api/content.js` and `api/submissions.js` (old proxies).
 5. In `vercel.json`: rewrite `/api/:path*` and `/media/:path*` to `/api/server`; build the admin
    (`cd new-admin && npm ci && npm run build`) into `public/admin/`; rewrite `/admin/:path*` to `/admin/index.html`.

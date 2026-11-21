@@ -5,6 +5,13 @@ import path from 'node:path';
 
 const MEDIA_DIR = () => path.resolve(process.env.MEDIA_DIR || './data/media');
 const useBlob = () => !!process.env.BLOB_READ_WRITE_TOKEN;
+// Public address of the Blob store: explicit BLOB_PUBLIC_URL, or derived from BLOB_STORE_ID (store_<id>).
+const blobBase = () => {
+  const explicit = (process.env.BLOB_PUBLIC_URL || '').replace(/\/$/, '');
+  if (explicit) return explicit;
+  const id = (process.env.BLOB_STORE_ID || '').replace(/^store_/i, '').toLowerCase();
+  return id ? `https://${id}.public.blob.vercel-storage.com` : '';
+};
 
 function safeKey(key: string) {
   const clean = key.replace(/\\/g, '/').split('/').filter(p => p && p !== '.' && p !== '..').join('/');
@@ -36,7 +43,7 @@ export const MEDIA = {
   async get(key: string): Promise<MediaObject | null> {
     const k = safeKey(key);
     if (useBlob()) {
-      const base = (process.env.BLOB_PUBLIC_URL || '').replace(/\/$/, '');
+      const base = blobBase();
       if (!base) return null;
       const r = await fetch(`${base}/${k.split('/').map(encodeURIComponent).join('/')}`);
       if (!r.ok || !r.body) return null;
@@ -50,7 +57,7 @@ export const MEDIA = {
   async delete(key: string) {
     const k = safeKey(key);
     if (useBlob()) {
-      const base = (process.env.BLOB_PUBLIC_URL || '').replace(/\/$/, '');
+      const base = blobBase();
       const { del } = await import('@vercel/blob');
       if (base) await del(`${base}/${k}`);
       return;
