@@ -20,7 +20,7 @@
     announce_kicker: 'You are invited',
     announce_title: 'A 3-Day Crusade:',
     announce_title_accent: 'Let There Be Light',
-    announce_theme: 'Genesis 1:3 · Arise, shine, for your light has come!',
+    announce_theme: 'Genesis 1:3 · “And God said, Let there be light: and there was light.”',
     announce_when: '25th, 26th & 27th November 2026 · 5:00 PM daily',
     announce_venue: 'Bread of Life Auditorium, Behind LEA Primary School, Kurudu, FCT Abuja',
     announce_ministering: 'Sis. Josephine Garba & other anointed men of God',
