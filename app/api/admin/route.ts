@@ -1,13 +1,14 @@
 import{env}from'cloudflare:workers';
 import{ADMIN_EMAIL,hashPassword,isAdmin}from'../../admin-auth';
 
-const SECTIONS=new Set(['hero_slides','word_slides','pastors','communities','visit_slides','stories']);
+const SECTIONS=new Set(['hero_slides','word_slides','pastors','communities','visit_slides','stories','announcement_slides']);
 
 export async function GET(request:Request){
  if(!await isAdmin(request.headers))return Response.json({error:'Your admin session has expired. Please sign in again.'},{status:403});
  await ensureDefaultContent();
  await ensureEventColumns();await ensureGalleryMedia();
  await ensureStoriesContent();
+ await ensureAnnouncementContent();
  const[settings,submissions,sermons,events,galleryMedia,contentItems,adminRows]=await Promise.all([
   env.DB.prepare('SELECT key,value FROM settings ORDER BY key').all(),
   env.DB.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIMIT 250').all(),
@@ -128,6 +129,21 @@ async function ensureStoriesContent(){
  await env.DB.batch([
   env.DB.prepare('INSERT INTO content_items(section,title,subtitle,description,body,image_url,button_text,button_url,contact_links,sort_order,visible,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,1,?,?)').bind('stories',text(legacy.story_person||'A ministry family'),'Member testimony',text(legacy.story_quote||'I found more than a church—I found people who prayed with me, stood beside my family and helped me grow in faith.'),'','','','','',0,now,now),
   env.DB.prepare("INSERT INTO settings(key,value,updated_at) VALUES('stories_collection_initialized','1',?) ON CONFLICT(key) DO UPDATE SET value='1',updated_at=excluded.updated_at").bind(now)
+ ]);
+}
+
+async function ensureAnnouncementContent(){
+ const marker=await env.DB.prepare("SELECT value FROM settings WHERE key='announce_slides_initialized'").first<any>();if(marker)return;
+ const now=new Date().toISOString();
+ const flyers=[
+  ['Crusade flyer: Let There Be Light (navy and gold)','/assets/images/crusade/crusade-1.jpg'],
+  ['Crusade flyer (blue)','/assets/images/crusade/crusade-2.jpg'],
+  ['Crusade flyer (light)','/assets/images/crusade/crusade-3.jpg'],
+  ['Crusade flyer (gold border)','/assets/images/crusade/crusade-4.jpg']
+ ];
+ await env.DB.batch([
+  ...flyers.map((f,i)=>env.DB.prepare('INSERT INTO content_items(section,title,subtitle,description,body,image_url,button_text,button_url,contact_links,sort_order,visible,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,1,?,?)').bind('announcement_slides',f[0],'','','',f[1],'','','',i,now,now)),
+  env.DB.prepare("INSERT INTO settings(key,value,updated_at) VALUES('announce_slides_initialized','1',?) ON CONFLICT(key) DO UPDATE SET value='1',updated_at=excluded.updated_at").bind(now)
  ]);
 }
 

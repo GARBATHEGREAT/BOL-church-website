@@ -193,6 +193,92 @@ html,body{overflow-x:clip}
   .site-header nav .nav-links>a::after,.site-header nav .explore-toggle::after{transition:none}
 }
 
+/* Version 48: editable mission and vision within the established About section. */
+.purpose-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:62px}
+.purpose-card{position:relative;min-height:320px;padding:clamp(28px,4vw,48px);overflow:hidden;border:1px solid rgba(8,124,61,.16);background:linear-gradient(145deg,#fff,#f3f8f4);box-shadow:0 22px 60px rgba(3,26,61,.08);color:inherit;text-align:left;font:inherit;cursor:pointer;transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease}
+.purpose-card:after{content:'';position:absolute;width:220px;height:220px;right:-105px;bottom:-120px;border:1px solid rgba(8,124,61,.15);border-radius:50%;box-shadow:0 0 0 30px rgba(8,124,61,.035),0 0 0 62px rgba(8,124,61,.025)}
+.purpose-card>span{position:absolute;right:24px;top:20px;color:rgba(6,42,100,.24);font-size:11px;letter-spacing:.16em}
+.purpose-icon{width:45px;height:45px;display:grid;place-items:center;border-radius:50%;background:#e7f3ea;color:var(--forest);font-size:18px}
+.purpose-card p{margin:28px 0 9px;color:var(--forest);font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+.purpose-card h3{max-width:490px;margin:0 0 18px;color:var(--blue);font:600 clamp(1.8rem,3vw,2.7rem)/1.03 var(--display)}
+.purpose-text{position:relative;z-index:1;max-width:540px;color:var(--muted);font-size:15px;line-height:1.75}
+.vision-card{background:linear-gradient(145deg,var(--blue-deep),#063c45);border-color:transparent;color:#fff}
+.vision-card .purpose-icon{background:rgba(255,255,255,.1);color:#ffc056}.vision-card p{color:#ffc056}.vision-card h3{color:#fff}.vision-card .purpose-text{color:#c6d3d5}.vision-card:after{border-color:rgba(255,255,255,.12);box-shadow:0 0 0 30px rgba(255,255,255,.025),0 0 0 62px rgba(255,255,255,.018)}
+.purpose-card:hover,.purpose-card:focus-visible{transform:translateY(-5px);box-shadow:0 30px 75px rgba(3,26,61,.13);outline:none}.purpose-card:focus-visible{box-shadow:0 0 0 4px rgba(243,146,24,.28),0 30px 75px rgba(3,26,61,.13)}.purpose-open{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:26px;padding-top:18px;border-top:1px solid rgba(8,124,61,.17);color:var(--forest);font-size:12px;letter-spacing:.08em;text-transform:uppercase}.vision-card .purpose-open{border-color:rgba(255,255,255,.2);color:#ffc056}.purpose-open i{font-style:normal;font-size:18px;transition:transform .25s ease}.purpose-card:hover .purpose-open i{transform:translate(3px,-3px)}
+@media(max-width:760px){.purpose-grid{grid-template-columns:1fr;margin-top:42px}.purpose-card{min-height:0;padding:28px 24px}.purpose-card h3{font-size:clamp(1.75rem,9vw,2.35rem)}}
+@media(prefers-reduced-motion:reduce){.purpose-card{transition:none}.purpose-card:hover{transform:none}}
+
+/* Complete vision, mission and core-values presentation. */
+.purpose-card{display:flex;flex-direction:column}.purpose-scriptures{position:relative;z-index:1;margin-top:auto;padding-top:24px}.purpose-scriptures b,.purpose-scriptures span{display:block}.purpose-scriptures b{margin-bottom:6px;color:#ffc056;font-size:10px;letter-spacing:.16em;text-transform:uppercase}.purpose-scriptures span{color:#e4ebed;font-size:13px;line-height:1.65}.core-values{margin-top:68px}.core-values-heading{display:flex;align-items:end;justify-content:space-between;gap:25px;margin-bottom:28px;border-bottom:1px solid rgba(6,40,93,.13);padding-bottom:22px}.core-values-heading p{margin:0;color:var(--forest);font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.core-values-heading h3{margin:0;color:var(--blue);font:600 clamp(2.5rem,5vw,4.5rem)/.95 var(--display)}.core-values-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid rgba(6,40,93,.12);border-left:1px solid rgba(6,40,93,.12)}.core-values-grid article{position:relative;min-height:190px;padding:32px 34px;border-right:1px solid rgba(6,40,93,.12);border-bottom:1px solid rgba(6,40,93,.12);background:#fff;transition:background .25s ease,transform .25s ease,box-shadow .25s ease}.core-values-grid article:hover{z-index:1;background:#f3f8f4;transform:translateY(-3px);box-shadow:0 18px 42px rgba(3,26,61,.09)}.core-values-grid article>span{display:block;margin-bottom:22px;color:var(--orange);font-size:10px;font-weight:800;letter-spacing:.16em}.core-values-grid h4{margin:0 0 10px;color:var(--blue);font:600 clamp(1.45rem,2.5vw,2rem)/1.05 var(--display)}.core-values-grid p{margin:0;max-width:520px;color:var(--muted);font-size:15px;line-height:1.7}.core-values-grid p b{color:var(--forest);font-size:13px;font-weight:700}@media(max-width:760px){.core-values{margin-top:48px}.core-values-heading{display:block}.core-values-heading p{margin-bottom:10px}.core-values-grid{grid-template-columns:1fr}.core-values-grid article{min-height:0;padding:27px 24px}.core-values-grid article>span{margin-bottom:15px}}@media(prefers-reduced-motion:reduce){.core-values-grid article{transition:none}.core-values-grid article:hover{transform:none}}
+
+/* Version 49: lively hero replay, polished navigation, impact and sermon layout. */
+.hero.hero-animation-reset .eyebrow,.hero.hero-animation-reset h1,.hero.hero-animation-reset h1 em,.hero.hero-animation-reset .hero-content>p,.hero.hero-animation-reset .hero-actions,.hero.hero-animation-reset .hero-proof{animation:none!important}
+.explore-chevron{width:25px;height:25px;display:grid;place-items:center;border:1px solid rgba(6,40,93,.16);border-radius:50%;color:var(--forest);transition:transform .3s cubic-bezier(.22,1,.36,1),background .25s,color .25s}
+.explore-chevron svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.explore-toggle:hover .explore-chevron,.explore-toggle:focus-visible .explore-chevron{background:var(--forest);color:#fff;transform:translateY(2px)}
+.explore-toggle.open .explore-chevron{background:var(--forest);color:#fff;transform:rotate(180deg)}
+.impact-strip{position:relative;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:64px clamp(24px,7vw,120px)!important;background:linear-gradient(135deg,#f8f5ec,#edf6ef)!important;overflow:hidden}
+.impact-strip:before{content:'';position:absolute;inset:auto -80px -190px auto;width:380px;height:380px;border:1px solid rgba(8,124,61,.13);border-radius:50%;box-shadow:0 0 0 48px rgba(8,124,61,.035),0 0 0 96px rgba(8,124,61,.022)}
+.impact-strip>div{position:relative;min-width:0;padding:30px 26px;border:1px solid rgba(6,40,93,.09);border-radius:16px;background:rgba(255,255,255,.78);box-shadow:0 16px 42px rgba(3,26,61,.07);overflow:hidden;transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s}
+.impact-strip>div:hover{transform:translateY(-5px);box-shadow:0 23px 55px rgba(3,26,61,.12)}
+.impact-strip i{position:absolute;right:18px;top:15px;color:rgba(6,40,93,.2);font:700 10px var(--body);font-style:normal;letter-spacing:.13em}
+.impact-strip b{display:block;color:var(--blue)!important;font:600 clamp(3.2rem,5vw,5.3rem)/.9 var(--display)!important;letter-spacing:-.045em}
+.impact-strip b:after{content:'+';margin-left:3px;color:var(--orange);font-size:.42em;vertical-align:top}
+.impact-strip>div:last-child b:after{content:''}
+.impact-strip span{display:block;margin-top:14px;color:var(--forest)!important;font-size:11px!important;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.sermons .video-grid{width:100%;max-width:1480px;margin-inline:auto;grid-template-columns:minmax(0,1.65fr) minmax(300px,.7fr)!important}
+.sermons .video-wrap,.sermons .message-copy{min-width:0}
+.sermons .video-wrap{min-height:0!important;aspect-ratio:16/9}
+.sermons .video-wrap iframe{display:block;width:100%;height:100%}
+.sermons .message-copy{overflow:hidden;padding:clamp(30px,3.8vw,58px)!important}
+.sermons .message-copy h3{max-width:100%;overflow-wrap:break-word;font-size:clamp(2rem,3vw,3.15rem)}
+@media(max-width:1050px){.impact-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.sermons .video-grid{grid-template-columns:minmax(0,1.35fr) minmax(270px,.65fr)!important}}
+@media(max-width:760px){.impact-strip{padding:38px 20px!important;gap:10px}.impact-strip>div{padding:24px 18px}.impact-strip b{font-size:clamp(2.7rem,14vw,4rem)!important}.sermons .video-grid{grid-template-columns:1fr!important}.sermons .video-wrap{aspect-ratio:16/9}.sermons .message-copy{padding:30px 24px!important}.explore-chevron{border-color:rgba(255,255,255,.25);color:#ffc056}}
+@media(max-width:390px){.impact-strip{grid-template-columns:1fr}.impact-strip>div{display:grid;grid-template-columns:90px 1fr;align-items:center}.impact-strip>div b{grid-row:1/3}.impact-strip>div span{margin-top:0}}
+@media(prefers-reduced-motion:reduce){.explore-chevron,.impact-strip>div{transition:none}.impact-strip>div:hover{transform:none}}
+
+/* Version 50: varied hero motion and a unified, restrained button glow. */
+html[data-hero-effect="drift"] .hero h1{animation-name:heroDriftReveal}
+html[data-hero-effect="unveil"] .hero h1{animation-name:heroLightUnveil}
+html[data-hero-effect="luminous"] .hero h1{animation-name:heroLuminousReveal}
+html[data-hero-effect="cascade"] .hero h1{animation-name:heroCascadeReveal}
+@keyframes heroDriftReveal{from{opacity:0;transform:translate3d(-28px,12px,0) rotate(-.5deg);filter:blur(4px)}70%{transform:translate3d(3px,-1px,0)}to{opacity:1;transform:none;filter:none}}
+@keyframes heroLightUnveil{from{opacity:0;clip-path:inset(0 100% 0 0);filter:brightness(1.45)}to{opacity:1;clip-path:inset(0);filter:none}}
+@keyframes heroLuminousReveal{from{opacity:0;transform:scale(.97);filter:blur(7px);text-shadow:0 0 35px rgba(255,192,86,.7)}65%{filter:none;text-shadow:0 0 22px rgba(255,192,86,.34)}to{opacity:1;transform:none;text-shadow:none}}
+@keyframes heroCascadeReveal{0%{opacity:0;transform:translateY(42px);clip-path:inset(100% 0 0)}55%{opacity:1;clip-path:inset(0);transform:translateY(-3px)}100%{opacity:1;transform:none}}
+html[data-hero-glow-motion="soft"] .hero h1 em{animation:heroAccentIn calc(var(--hero-motion-duration,1.2s) * .82) cubic-bezier(.22,1,.36,1) .28s both,heroSoftLivingGlow 4.6s ease-in-out 1.4s infinite}
+html[data-hero-glow-motion="lively"] .hero h1 em{animation:heroAccentIn calc(var(--hero-motion-duration,1.2s) * .82) cubic-bezier(.22,1,.36,1) .28s both,heroLivelyGlow 3.4s ease-in-out 1.3s infinite}
+html[data-hero-glow-motion="off"] .hero h1 em{animation:heroAccentIn calc(var(--hero-motion-duration,1.2s) * .82) cubic-bezier(.22,1,.36,1) .28s both}
+@keyframes heroSoftLivingGlow{0%,100%{transform:translateY(0);text-shadow:0 0 0 transparent}50%{transform:translateY(-2px);text-shadow:0 7px 25px rgba(255,192,86,.3)}}
+@keyframes heroLivelyGlow{0%,100%{transform:translate3d(0,0,0);text-shadow:0 0 0 transparent}45%{transform:translate3d(3px,-3px,0);text-shadow:0 7px 30px rgba(255,192,86,.48)}60%{transform:translate3d(-1px,-1px,0);text-shadow:0 4px 20px rgba(255,192,86,.3)}}
+.button,.nav-visit,.nav-give,.prayer-float,.carousel-arrow,.verse-arrow,.event-details-button,.quick-connect>a,.events-gallery-preview .button{transition:transform .26s cubic-bezier(.22,1,.36,1),box-shadow .26s ease,filter .26s ease,background-color .26s ease!important}
+.button:hover,.nav-visit:hover,.nav-give:hover,.prayer-float:hover,.carousel-arrow:hover,.verse-arrow:hover,.event-details-button:hover,.quick-connect>a:hover,.events-gallery-preview .button:hover,.button:focus-visible,.nav-visit:focus-visible,.nav-give:focus-visible,.prayer-float:focus-visible,.carousel-arrow:focus-visible,.verse-arrow:focus-visible,.event-details-button:focus-visible{transform:translateY(-2px);filter:brightness(1.035);box-shadow:0 10px 28px rgba(8,124,61,.22),0 0 0 4px rgba(255,181,38,.1)!important}
+.button.primary,.nav-give,.prayer-float{box-shadow:0 8px 24px rgba(8,124,61,.16),0 0 18px rgba(255,181,38,.08)}
+@media(prefers-reduced-motion:reduce){.button,.nav-visit,.nav-give,.prayer-float,.carousel-arrow,.verse-arrow,.event-details-button,.quick-connect>a{transition:none!important}.button:hover,.nav-visit:hover,.nav-give:hover,.prayer-float:hover,.carousel-arrow:hover,.verse-arrow:hover,.event-details-button:hover,.quick-connect>a:hover{transform:none}html[data-hero-glow-motion] .hero h1 em{animation:none!important}}
+
+/* Version 51: visible touch-friendly hero button glow. */
+.hero-actions .button{position:relative;isolation:isolate;overflow:visible}
+.hero-actions .button.primary{box-shadow:0 10px 30px rgba(255,157,0,.3),0 0 0 1px rgba(255,218,139,.42),0 0 24px rgba(255,181,38,.25)!important;animation:heroGoldButtonGlow 3.2s ease-in-out infinite}
+.hero-actions .button.ghost{border-color:rgba(255,255,255,.72);background:rgba(255,255,255,.1);box-shadow:0 9px 26px rgba(0,0,0,.2),0 0 0 1px rgba(255,255,255,.18),0 0 22px rgba(255,255,255,.18)!important;animation:heroWhiteButtonGlow 3.2s ease-in-out .45s infinite}
+.hero-actions .button:after{content:'';position:absolute;inset:-5px;border:1px solid transparent;border-radius:inherit;pointer-events:none;opacity:.55}
+.hero-actions .button.primary:after{border-color:rgba(255,190,62,.34)}
+.hero-actions .button.ghost:after{border-color:rgba(255,255,255,.24)}
+@keyframes heroGoldButtonGlow{0%,100%{box-shadow:0 10px 30px rgba(255,157,0,.3),0 0 0 1px rgba(255,218,139,.42),0 0 20px rgba(255,181,38,.23)}50%{box-shadow:0 13px 38px rgba(255,157,0,.42),0 0 0 4px rgba(255,190,62,.13),0 0 38px rgba(255,181,38,.48)}}
+@keyframes heroWhiteButtonGlow{0%,100%{box-shadow:0 9px 26px rgba(0,0,0,.2),0 0 0 1px rgba(255,255,255,.18),0 0 18px rgba(255,255,255,.16)}50%{box-shadow:0 12px 34px rgba(0,0,0,.22),0 0 0 4px rgba(255,255,255,.09),0 0 34px rgba(255,255,255,.36)}}
+.nav-visit,.carousel-arrow,.verse-arrow,.event-details-button{box-shadow:0 7px 20px rgba(3,26,61,.1),0 0 14px rgba(255,255,255,.12)}
+.nav-give,.prayer-float,.button.primary{box-shadow:0 9px 25px rgba(8,124,61,.22),0 0 20px rgba(255,181,38,.14)}
+@media(max-width:680px){.hero-actions .button.primary{box-shadow:0 10px 32px rgba(255,157,0,.4),0 0 0 2px rgba(255,218,139,.38),0 0 30px rgba(255,181,38,.36)!important}.hero-actions .button.ghost{background:rgba(3,26,61,.23);box-shadow:0 9px 30px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.32),0 0 28px rgba(255,255,255,.28)!important}}
+@media(prefers-reduced-motion:reduce){.hero-actions .button{animation:none!important}}
+
+/* Every public action remains visibly interactive, including on touch screens. */
+.nav-toggle,.nav-close,.nav-actions a,.button,.prayer-float,.to-top,.carousel-arrow,.verse-arrow,.event-details-button,.story-nav button,.event-modal-close,.quick-connect>a,.social-banner-links a,.nav-social-shortcuts a,.footer-socials a{box-shadow:0 7px 22px rgba(3,26,61,.13),0 0 16px rgba(8,124,61,.12);animation:siteControlGlow 4.8s ease-in-out infinite}
+.nav-give,.button.primary,.prayer-float{animation-name:siteGreenGoldGlow}
+.carousel-arrow:nth-of-type(even),.verse-arrow.next,.social-banner-links a:nth-child(even),.nav-social-shortcuts a:nth-child(even){animation-delay:.7s}
+@keyframes siteControlGlow{0%,100%{box-shadow:0 7px 22px rgba(3,26,61,.13),0 0 13px rgba(8,124,61,.1)}50%{box-shadow:0 10px 27px rgba(3,26,61,.18),0 0 23px rgba(255,181,38,.2)}}
+@keyframes siteGreenGoldGlow{0%,100%{box-shadow:0 8px 24px rgba(8,124,61,.24),0 0 15px rgba(255,181,38,.14)}50%{box-shadow:0 12px 32px rgba(8,124,61,.34),0 0 28px rgba(255,181,38,.3)}}
+.hero-actions .button.primary{animation-name:heroGoldButtonGlow}.hero-actions .button.ghost{animation-name:heroWhiteButtonGlow}
+@media(prefers-reduced-motion:reduce){.nav-toggle,.nav-close,.nav-actions a,.button,.prayer-float,.to-top,.carousel-arrow,.verse-arrow,.event-details-button,.story-nav button,.event-modal-close,.quick-connect>a,.social-banner-links a,.nav-social-shortcuts a,.footer-socials a{animation:none!important}}
+
 /* Version 25: quiet, purposeful motion for key editorial typography. */
 .hero .eyebrow{animation:heroCopyIn .65s cubic-bezier(.22,1,.36,1) .08s both}
 .hero h1{animation:heroHeadlineIn .9s cubic-bezier(.22,1,.36,1) .16s both}
@@ -236,11 +322,20 @@ html[data-hero-welcome-effect="goldSweep"] .hero .eyebrow{animation-name:heroWel
 html[data-hero-welcome-effect="welcomeRise"] .hero .eyebrow{animation-name:heroWelcomeRise}
 html[data-hero-welcome-effect="letterOpen"] .hero .eyebrow{animation-name:heroLetterOpen}
 html[data-hero-welcome-effect="softPulse"] .hero .eyebrow{animation-name:heroWelcomePulse}
+html[data-hero-welcome-effect="typedGlow"] .hero .eyebrow{overflow:hidden;white-space:nowrap;clip-path:inset(0 100% 0 0);animation:heroTypeWelcome calc(var(--hero-motion-duration,1.2s) * 1.45) steps(28,end) .08s forwards,heroTypedGlow calc(var(--hero-motion-duration,1.2s) * 3.4) ease-in-out calc(var(--hero-motion-duration,1.2s) * 1.6) infinite}
+html[data-hero-welcome-effect="softShimmer"] .hero .eyebrow{background:linear-gradient(100deg,#ffb526 20%,#fff3c4 48%,#ffb526 76%);background-size:230% 100%;background-clip:text;-webkit-background-clip:text;color:transparent;animation:heroWelcomeShimmer calc(var(--hero-motion-duration,1.2s) * 2.4) ease-in-out both}
+html[data-hero-welcome-effect="gentleFloat"] .hero .eyebrow{animation:heroWelcomeFloat calc(var(--hero-motion-duration,1.2s) * 2.8) ease-in-out infinite}
+html[data-hero-welcome-effect="lineReveal"] .hero .eyebrow{padding-bottom:7px;background:linear-gradient(90deg,#ffc056,#fff1bc) left bottom/0 2px no-repeat;animation:heroWelcomeLine calc(var(--hero-motion-duration,1.2s) * 1.05) cubic-bezier(.22,1,.36,1) forwards}
 html[data-hero-welcome-effect="none"] .hero .eyebrow{animation:none!important}
 @keyframes heroWelcomeSweep{from{opacity:0;transform:translateX(-26px);filter:blur(4px);background-size:0 2px}to{opacity:1;transform:none;filter:none;background-size:100% 2px}}
 @keyframes heroWelcomeRise{from{opacity:0;transform:translateY(22px) scale(.96)}70%{transform:translateY(-2px) scale(1.01)}to{opacity:1;transform:none}}
 @keyframes heroLetterOpen{from{opacity:0;letter-spacing:.04em;filter:blur(3px)}to{opacity:1;letter-spacing:.22em;filter:none}}
 @keyframes heroWelcomePulse{from{opacity:0;transform:scale(.86);text-shadow:0 0 0 transparent}70%{transform:scale(1.04);text-shadow:0 0 24px rgba(255,192,86,.55)}to{opacity:1;transform:none}}
+@keyframes heroTypeWelcome{from{opacity:1;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0)}}
+@keyframes heroTypedGlow{0%,100%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 14px rgba(255,192,86,.48),0 3px 18px rgba(255,192,86,.2)}}
+@keyframes heroWelcomeShimmer{from{opacity:0;background-position:130% 0}35%{opacity:1}to{opacity:1;background-position:-90% 0}}
+@keyframes heroWelcomeFloat{0%,100%{opacity:1;transform:translateY(0);text-shadow:0 0 0 transparent}50%{opacity:1;transform:translateY(-3px);text-shadow:0 4px 18px rgba(255,192,86,.3)}}
+@keyframes heroWelcomeLine{from{opacity:0;transform:translateY(9px);background-size:0 2px}to{opacity:1;transform:none;background-size:100% 2px}}
 html[data-hero-welcome-effect="goldSweep"] .hero .eyebrow{padding-bottom:7px;background:linear-gradient(#ffc056,#ffc056) left bottom/100% 2px no-repeat}
 html[data-hero-repeat="continuous"][data-hero-welcome-effect="goldSweep"] .hero .eyebrow{animation:heroWelcomeSweep calc(var(--hero-motion-duration,1.2s) * .8) cubic-bezier(.22,1,.36,1) both,heroWelcomeBreathe calc(var(--hero-motion-duration,1.2s) * 3.6) ease-in-out 1.6s infinite}
 html[data-hero-repeat="continuous"][data-hero-welcome-effect="softPulse"] .hero .eyebrow{animation:heroWelcomePulse calc(var(--hero-motion-duration,1.2s) * .8) ease both,heroWelcomeBreathe calc(var(--hero-motion-duration,1.2s) * 3.2) ease-in-out 1.5s infinite}
@@ -254,3 +349,8 @@ html[data-hero-repeat="continuous"][data-hero-welcome-effect="softPulse"] .hero 
   .scroll-reveal h2,.scroll-reveal h2 em,.word-slide h3,.leader-card h3,.ministry-card h3,.message-copy h3,.events-list h3,.visit-slide h3{transition:none!important}
   .scroll-reveal:not(.visible) h2,.scroll-reveal:not(.visible) h2 em{opacity:1;transform:none}
 }
+
+/* Core values open from the Vision and Mission cards instead of filling the page. */
+.core-values-modal[hidden]{display:none}.core-values-modal{position:fixed;inset:0;z-index:2200;display:grid;place-items:center;padding:clamp(12px,3vw,34px)}.core-values-backdrop{position:absolute;inset:0;border:0;background:rgba(1,13,32,.84);backdrop-filter:blur(10px);cursor:pointer}.core-values-modal .core-values{position:relative;width:min(1120px,100%);max-height:90dvh;overflow:auto;margin:0;padding:clamp(28px,4vw,52px);border-radius:22px;background:#f9fbf9;box-shadow:0 38px 110px rgba(0,0,0,.45);animation:eventReveal .42s cubic-bezier(.22,1,.36,1)}.core-values-modal .core-values-heading{padding-right:58px}.core-values-close{position:sticky;z-index:4;float:right;right:0;top:0;width:48px;height:48px;margin:0;border:1px solid rgba(6,40,93,.14);border-radius:50%;background:#fff;color:var(--blue);box-shadow:0 10px 25px rgba(3,26,61,.12);font-size:28px;line-height:1;cursor:pointer}.core-values-close:hover,.core-values-close:focus-visible{background:var(--blue);color:#fff;outline:none;transform:rotate(6deg) scale(1.04)}.core-values-modal .core-values-grid{clear:both}.core-values-modal .core-values-grid article{min-height:170px}
+@media(max-width:760px){.core-values-modal{padding:8px}.core-values-modal .core-values{max-height:94dvh;padding:24px 18px;border-radius:16px}.core-values-modal .core-values-heading{padding-right:42px}.core-values-modal .core-values-heading h3{font-size:clamp(2.25rem,13vw,3.4rem)}.core-values-close{width:42px;height:42px}.core-values-modal .core-values-grid article{padding:24px 20px}}
+@media(prefers-reduced-motion:reduce){.core-values-modal .core-values{animation:none}.purpose-open i,.core-values-close{transition:none!important}}
