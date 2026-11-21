@@ -1,0 +1,37 @@
+/* Version 51: visible glow for every Gallery action on mouse and touch devices. */
+.gallery-home,
+.gallery-filters button,
+.gallery-card button,
+.gallery-card .download,
+.viewer-stage a,
+.viewer-close,
+.viewer-arrow,
+footer > a:last-child {
+  box-shadow: 0 7px 22px rgba(3, 26, 61, .16), 0 0 15px rgba(8, 124, 61, .13);
+  animation: galleryControlGlow 4.8s ease-in-out infinite;
+}
+
+.gallery-filters button.active,
+.viewer-stage a,
+.gallery-card .download { animation-name: galleryGoldGlow; }
+
+@keyframes galleryControlGlow {
+  0%, 100% { box-shadow: 0 7px 22px rgba(3, 26, 61, .16), 0 0 13px rgba(8, 124, 61, .11); }
+  50% { box-shadow: 0 10px 28px rgba(3, 26, 61, .22), 0 0 24px rgba(8, 124, 61, .23); }
+}
+
+@keyframes galleryGoldGlow {
+  0%, 100% { box-shadow: 0 7px 22px rgba(3, 26, 61, .18), 0 0 14px rgba(245, 166, 35, .18); }
+  50% { box-shadow: 0 11px 30px rgba(3, 26, 61, .24), 0 0 27px rgba(245, 166, 35, .38); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-home,
+  .gallery-filters button,
+  .gallery-card button,
+  .gallery-card .download,
+  .viewer-stage a,
+  .viewer-close,
+  .viewer-arrow,
+  footer > a:last-child { animation: none !important; }
+}

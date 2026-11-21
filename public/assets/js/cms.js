@@ -1,5 +1,6 @@
 /* Loads easy file settings, then applies changes saved through Admin. */
 let cmsRefreshInProgress = false;
+let heroReplayTimer = null;
 
 async function loadCmsContent() {
   if (cmsRefreshInProgress) return;
@@ -47,6 +48,9 @@ async function loadCmsContent() {
       ,heroTextEffect: saved.hero_text_effect
       ,heroAnimationDuration: saved.hero_animation_duration
       ,heroAnimationRepeat: saved.hero_animation_repeat
+      ,heroAnimationInterval: saved.hero_animation_interval
+      ,heroAnimationMode: saved.hero_animation_mode
+      ,heroGlowMotion: saved.hero_glow_motion
       ,heroAnimationIntensity: saved.hero_animation_intensity
       ,heroWelcomeEffect: saved.hero_welcome_effect
     });
@@ -102,16 +106,28 @@ function applySectionSettings(saved) {
     ,['.hero-actions .primary .button-label','hero_primary_text'],['.hero-actions .ghost .button-label','hero_secondary_text'],['.hero-proof b','hero_proof_title'],['.hero-proof small','hero_proof_text'],['.prayer-float b','prayer_button_text']
     ,['.quick-connect > a:nth-child(1) small','quick_1_label'],['.quick-connect > a:nth-child(1) b','quick_1_title'],['.quick-connect > a:nth-child(2) small','quick_2_label'],['.quick-connect > a:nth-child(2) b','quick_2_title'],['.quick-connect > a:nth-child(3) small','quick_3_label'],['.quick-connect > a:nth-child(3) b','quick_3_title']
     ,['.about-secondary','about_secondary_text'],['.about-link','about_link_text'],['.signature-line b','signature_text']
+    ,['.mission-card p','mission_label'],['.mission-card h3','mission_title'],['.mission-card .purpose-text','mission_text']
+    ,['.vision-card p','vision_label'],['.vision-card h3','vision_title'],['.vision-card .purpose-text','vision_text']
+    ,['.vision-card .purpose-scriptures span','vision_scriptures'],['.core-values-heading p','core_values_label'],['.core-values-heading h3','core_values_title']
     ,['.verse:nth-child(1) p','verse_1_text'],['.verse:nth-child(1) span','verse_1_ref'],['.verse:nth-child(2) p','verse_2_text'],['.verse:nth-child(2) span','verse_2_ref'],['.verse:nth-child(3) p','verse_3_text'],['.verse:nth-child(3) span','verse_3_ref']
-    ,['.nav-links [data-nav="about"]','nav_about'],['.nav-links [data-nav="messages"]','nav_messages'],['.nav-links .explore-toggle b','nav_connect'],['.nav-links [data-nav="events"]','nav_events'],['.nav-links [data-nav="gallery"]','nav_gallery'],['.nav-links [data-nav="contact"]','nav_contact'],['footer > p','footer_tagline'],['.copyright','footer_copyright']
+    ,['.nav-links [data-nav="about"]','nav_about'],['.nav-links [data-nav="messages"]','nav_messages'],['.nav-links [data-nav="connect"] b','nav_connect'],['.nav-links [data-nav="events"]','nav_events'],['.nav-links [data-nav="gallery"]','nav_gallery'],['.nav-links [data-nav="contact"]','nav_contact'],['footer > p','footer_tagline'],['.copyright','footer_copyright']
     ,['.nav-toggle em','nav_menu_label'],['.nav-actions .nav-visit','nav_visit_button'],['.explore-intro small','nav_explore_kicker'],['.explore-intro h3','nav_explore_heading'],['.explore-intro p','nav_explore_text'],['.nav-mobile-foot p','footer_tagline'],['.nav-mobile-foot > a','church_phone']
     ,['.explore-grid > a:nth-child(1) b','nav_card_1_title'],['.explore-grid > a:nth-child(1) small','nav_card_1_text'],['.explore-grid > a:nth-child(2) b','nav_card_2_title'],['.explore-grid > a:nth-child(2) small','nav_card_2_text'],['.explore-grid > a:nth-child(3) b','nav_card_3_title'],['.explore-grid > a:nth-child(3) small','nav_card_3_text'],['.explore-grid > a:nth-child(4) b','nav_card_4_title'],['.explore-grid > a:nth-child(4) small','nav_card_4_text']
   ];
   values.forEach(([selector,key]) => setText(selector,saved[key]));
+  document.querySelectorAll('.core-values-grid article').forEach(function(card,index){
+    const value=saved['core_value_'+(index+1)];
+    if(value===undefined||value===null)return;
+    const parts=String(value).match(/^(.*?)(\s*\([^)]+\)\.?)$/);
+    const paragraph=card.querySelector('p');
+    if(!paragraph)return;
+    if(parts){paragraph.textContent=parts[1].trim()+' ';const citation=document.createElement('b');citation.textContent=parts[2].trim();paragraph.appendChild(citation)}
+    else paragraph.textContent=value;
+  });
   const links = [
     ['.hero-actions .primary','hero_primary_url'],['.hero-actions .ghost','hero_secondary_url'],
     ['.quick-connect > a:nth-child(1)','quick_1_url'],['.quick-connect > a:nth-child(2)','quick_2_url'],['.quick-connect > a:nth-child(3)','quick_3_url'],['.about-link','about_link_url']
-    ,['.nav-actions .nav-visit','nav_visit_url'],['.explore-grid > a:nth-child(1)','nav_card_1_url'],['.explore-grid > a:nth-child(2)','nav_card_2_url'],['.explore-grid > a:nth-child(3)','nav_card_3_url'],['.explore-grid > a:nth-child(4)','nav_card_4_url']
+    ,['.nav-actions .nav-visit','nav_visit_url'],['.connect-link','nav_connect_url'],['.explore-grid > a:nth-child(1)','nav_card_1_url'],['.explore-grid > a:nth-child(2)','nav_card_2_url'],['.explore-grid > a:nth-child(3)','nav_card_3_url'],['.explore-grid > a:nth-child(4)','nav_card_4_url']
   ];
   links.forEach(([selector,key]) => { const element=document.querySelector(selector); if(element&&saved[key]) element.href=saved[key]; });
   if (saved.maps_url) document.querySelectorAll('[data-map-link]').forEach(link => link.href = saved.maps_url);
@@ -175,16 +191,43 @@ function applySettings(settings) {
 }
 
 function applyHeroAnimation(settings) {
-  const allowedEffects=['cinematic','graceful','zoom','focus','rise','fade','slide','glow','none'];
+  const allowedEffects=['cinematic','graceful','zoom','focus','rise','fade','slide','glow','drift','unveil','luminous','cascade','none'];
   const effect=allowedEffects.includes(settings.heroTextEffect)?settings.heroTextEffect:'graceful';
-  const allowedWelcomeEffects=['goldSweep','welcomeRise','letterOpen','softPulse','none'];
+  const allowedWelcomeEffects=['typedGlow','goldSweep','welcomeRise','letterOpen','softPulse','softShimmer','gentleFloat','lineReveal','none'];
   const welcomeEffect=allowedWelcomeEffects.includes(settings.heroWelcomeEffect)?settings.heroWelcomeEffect:'goldSweep';
-  const duration=Math.min(2.5,Math.max(.6,Number(settings.heroAnimationDuration)||1.2));
+  const duration=Math.min(4,Math.max(.6,Number(settings.heroAnimationDuration)||1.2));
   document.documentElement.dataset.heroEffect=effect;
   document.documentElement.dataset.heroWelcomeEffect=welcomeEffect;
   document.documentElement.dataset.heroRepeat=settings.heroAnimationRepeat==='continuous'?'continuous':'once';
   document.documentElement.dataset.heroIntensity=['soft','standard','bold'].includes(settings.heroAnimationIntensity)?settings.heroAnimationIntensity:'standard';
+  document.documentElement.dataset.heroGlowMotion=['off','soft','lively'].includes(settings.heroGlowMotion)?settings.heroGlowMotion:'soft';
   document.documentElement.style.setProperty('--hero-motion-duration',duration+'s');
+  scheduleHeroReplay(settings.heroAnimationRepeat, settings.heroAnimationInterval, settings.heroAnimationMode, effect, welcomeEffect);
+}
+
+function scheduleHeroReplay(repeat, intervalValue, modeValue, selectedEffect, selectedWelcomeEffect) {
+  if (heroReplayTimer) clearInterval(heroReplayTimer);
+  heroReplayTimer = null;
+  if (repeat !== 'continuous' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const seconds = Math.min(20, Math.max(5, Number(intervalValue) || 5));
+  const mode = modeValue === 'same' ? 'same' : 'rotating';
+  const headlineEffects=['cinematic','unveil','focus','cascade','rise','luminous','drift','zoom','graceful','slide','fade','glow'];
+  const welcomeEffects=['typedGlow','goldSweep','letterOpen','softShimmer','welcomeRise','lineReveal','softPulse','gentleFloat'];
+  let headlineIndex=Math.max(0,headlineEffects.indexOf(selectedEffect));
+  let welcomeIndex=Math.max(0,welcomeEffects.indexOf(selectedWelcomeEffect));
+  heroReplayTimer = window.setInterval(function () {
+    const hero = document.querySelector('.hero');
+    if (!hero || document.hidden) return;
+    hero.classList.add('hero-animation-reset');
+    void hero.offsetWidth;
+    if(mode==='rotating'){
+      headlineIndex=(headlineIndex+1)%headlineEffects.length;
+      welcomeIndex=(welcomeIndex+3)%welcomeEffects.length;
+      document.documentElement.dataset.heroEffect=headlineEffects[headlineIndex];
+      document.documentElement.dataset.heroWelcomeEffect=welcomeEffects[welcomeIndex];
+    }
+    hero.classList.remove('hero-animation-reset');
+  }, seconds * 1000);
 }
 
 function setSocialLink(network, value) {
@@ -207,6 +250,16 @@ function applyManagedContent(items) {
   renderCommunities(grouped.communities || []);
   renderCarousel('[data-carousel="visit"]', grouped.visit_slides || [], renderVisitSlide);
   renderCarousel('[data-carousel="stories"]', grouped.stories || [], renderStorySlide);
+  renderGalleryMoments(grouped.gallery_preview || []);
+}
+
+function renderGalleryMoments(items) {
+  if (!items.length) return;
+  const preview = document.querySelector('[data-gallery-preview]');
+  if (!preview) return;
+  preview.innerHTML = items.slice(0, 6).map(function (item) {
+    return '<a href="/gallery" aria-label="Open ' + escapeAttribute(item.title || 'church gallery') + '"><img src="' + escapeAttribute(item.image_url) + '" alt="' + escapeAttribute(item.title || 'Bread of Life church family') + '" loading="lazy"></a>';
+  }).join('');
 }
 
 function renderHero(items) {
@@ -382,14 +435,15 @@ function openEventModal(event) {
 
 function setText(selector, value, preserveChild) {
   const element = document.querySelector(selector);
-  if (!element || !value) return;
+  if (!element || value === undefined || value === null) return;
   if (preserveChild) {
     const child = element.querySelector('a,em,span');
-    const textNode = [...element.childNodes].find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
-    if (textNode) textNode.textContent = value + (child ? ' ' : '');
+    const textNode = [...element.childNodes].find(node => node.nodeType === Node.TEXT_NODE);
+    if (textNode) textNode.textContent = String(value) + (child && value ? ' ' : '');
+    else element.insertBefore(document.createTextNode(String(value)+(child&&value?' ':'')),child||null);
     return;
   }
-  element.textContent = value;
+  element.textContent = String(value);
 }
 
 function escapeHtml(value) {

@@ -60,3 +60,24 @@ window.addEventListener('scroll', () => {
   navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + current));
 }, { passive: true });
 topButton?.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
+
+const coreValuesModal = document.querySelector('[data-core-values-modal]');
+const coreValuesTriggers = [...document.querySelectorAll('[data-core-values-open]')];
+let lastCoreValuesTrigger = null;
+function closeCoreValues() {
+  if (!coreValuesModal) return;
+  coreValuesModal.hidden = true;
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', coreValuesEscape);
+  lastCoreValuesTrigger?.focus();
+}
+function coreValuesEscape(event) { if (event.key === 'Escape') closeCoreValues(); }
+coreValuesTriggers.forEach(trigger => trigger.addEventListener('click', () => {
+  if (!coreValuesModal) return;
+  lastCoreValuesTrigger = trigger;
+  coreValuesModal.hidden = false;
+  document.body.classList.add('modal-open');
+  coreValuesModal.querySelector('.core-values-close')?.focus();
+  document.addEventListener('keydown', coreValuesEscape);
+}));
+coreValuesModal?.querySelectorAll('[data-core-values-close]').forEach(button => button.addEventListener('click', closeCoreValues));

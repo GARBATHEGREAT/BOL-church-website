@@ -22,8 +22,9 @@ const groups=[
 ] as const;
 const impactGroup=groups.find(group=>group.title.startsWith('Family Reached'))!;
 const navigationGroups=groups.filter(group=>group.title.toLowerCase().includes('navigation'));
-const tabs=[['overview','Overview'],['website','Website editor'],['navigation','Navigation'],['animation','Hero Animation'],['impact','Family Reached'],['hero','Hero slides'],['word','Growing in the Word'],['pastors','Pastors'],['communities','Communities'],['visit','Come As You Are'],['stories','Stories of Grace'],['sermons','YouTube videos'],['events','Events'],['gallery','Gallery'],['messages','Messages'],['admins','Administrators']] as const;
+const tabs=[['overview','Overview'],['announcement','Announcement'],['website','Website editor'],['navigation','Navigation'],['animation','Hero Animation'],['impact','Family Reached'],['hero','Hero slides'],['word','Growing in the Word'],['pastors','Pastors'],['communities','Communities'],['visit','Come As You Are'],['stories','Stories of Grace'],['sermons','YouTube videos'],['events','Events'],['gallery','Gallery'],['messages','Messages'],['admins','Administrators']] as const;
 const collectionConfig:any={
+ announcement:{section:'announcement_slides',title:'Announcement flyers',description:'These flyers rotate automatically in the popup visitors see when the website opens. Upload new flyers, reorder them with the arrows, or hide ones you no longer want. Landscape (16:9) flyers fit best.',fields:[{key:'title',label:'Flyer description (read aloud for screen readers)',placeholder:'Crusade flyer: Let There Be Light'}]},
  hero:{section:'hero_slides',title:'Hero slides',description:'Manage the main background images and welcome message.',fields:[{key:'title',label:'Main heading',placeholder:'Encounter God. Discover purpose.'},{key:'subtitle',label:'Small heading',placeholder:'Welcome home'},{key:'description',label:'Tagline',textarea:true},{key:'buttonText',label:'Button text'},{key:'buttonUrl',label:'Button link'}]},
  word:{section:'word_slides',title:'Growing in the Word',description:'Add as many photographs and messages as you need. The slideshow adapts automatically.',fields:[{key:'title',label:'Title'},{key:'subtitle',label:'Small heading'},{key:'description',label:'Description',textarea:true}]},
  pastors:{section:'pastors',title:'Teaching & Pastoral Care',description:'The Head Pastor appears first. Add, reorder, hide or update every pastor here.',fields:[{key:'title',label:'Pastor name'},{key:'subtitle',label:'Ministry title / position',placeholder:'Head Pastor'},{key:'description',label:'Short description',textarea:true},{key:'body',label:'Optional biography',textarea:true},{key:'contactLinks',label:'Optional links',placeholder:'Facebook | https://... (one per line)',textarea:true}]},
@@ -52,8 +53,40 @@ export default function Dashboard({email}:{email:string}){
  {tab==='navigation'&&<div className="settings-groups"><div className="panel admin-tip"><h2>Navigation editor</h2><p>Edit the main menu labels, the information shown inside the opened menu, its four feature links, action buttons, and navigation footer.</p></div>{navigationGroups.map(g=><SettingsGroup key={g.title} group={g} saved={saved} saveGroup={saveGroup}/>)}</div>}
  {tab==='animation'&&<HeroAnimation saved={saved} saveGroup={saveGroup}/>}
  {tab==='impact'&&<form className="panel settings-card" onSubmit={saveGroup}><h2>{impactGroup.title}</h2><p>{impactGroup.description}</p><div className="settings-grid">{impactGroup.fields.map(([key,label,fallback])=><label key={key}>{label}<input name={key} type={key.endsWith('_number')?'number':'text'} min={key.endsWith('_number')?'0':undefined} defaultValue={saved[key]||fallback}/></label>)}</div><button>Save Family Reached numbers</button></form>}
+ {tab==='announcement'&&<AnnouncementSettings saved={saved} saveGroup={saveGroup}/>}
  {currentCollection&&<ContentManager {...currentCollection} items={data.contentItems.filter(item=>item.section===currentCollection.section)} send={send}/>}
  </>}</section></div>
+}
+
+const announcementFields:[string,string,string,('text'|'area')?][]=[
+ ['announce_kicker','Small heading above the title','You are invited'],
+ ['announce_title','Title (first part)','A 3-Day Crusade:'],
+ ['announce_title_accent','Title (highlighted part)','Let There Be Light'],
+ ['announce_theme','Theme line','Genesis 1:3 · Arise, shine, for your light has come!'],
+ ['announce_when','Dates and time','25th, 26th & 27th November 2026 · 5:00 PM daily'],
+ ['announce_venue','Venue','Bread of Life Auditorium, Behind LEA Primary School, Kurudu, FCT Abuja'],
+ ['announce_ministering','Ministering','Sis. Josephine Garba & other anointed men of God'],
+ ['announce_featuring','Featuring','Salvation · Deliverance · Divine Breakthrough · Fruitfulness · Healing · Restoration','area'],
+ ['announce_phones','Enquiry phone numbers (separate with commas)','08138650476, 08100181370, 08023734216'],
+ ['announce_directions_url','Directions link (Google Maps)','https://www.google.com/maps/search/?api=1&query=LEA+Primary+School+Kurudu+Abuja']
+];
+const accountFields:[string,string,string][]=[
+ ['announce_account_heading','Heading above the account','Ministry account'],
+ ['announce_bank','Bank','Zenith Bank'],
+ ['announce_account_name','Account name','Bread of Life Divine Covenant Ministry'],
+ ['announce_account_number','Account number (clear it to hide the account box)','1016540285']
+];
+function AnnouncementSettings({saved,saveGroup}:{saved:Record<string,string>;saveGroup:(e:FormEvent<HTMLFormElement>)=>void}){
+ const val=(key:string,fallback:string)=>key in saved?saved[key]:fallback;
+ return <form className="panel settings-card" onSubmit={saveGroup}><small>Opening announcement popup · currently {val('announce_version','v1')}</small><h2>Announcement settings</h2><p>This popup opens when visitors arrive. Visitors who close it will not see it again during that visit. Changes go live as soon as you save.</p>
+  <div className="settings-grid">
+   <label>Show the announcement<select name="announce_enabled" defaultValue={val('announce_enabled','1')}><option value="1">Yes, show it</option><option value="0">No, hide it</option></select></label>
+   <label>Announcement version<input name="announce_version" defaultValue={val('announce_version','v1')}/><small>Change this (for example to v2) when you post a new announcement. People who closed the old one will see the new one.</small></label>
+   <label>Stop showing after (last day)<input name="announce_end_date" type="date" defaultValue={val('announce_end_date','2026-11-27')}/><small>The popup disappears by itself after this date.</small></label>
+   <label>Seconds between flyers<input name="announce_interval" type="number" min="2" max="30" step="1" defaultValue={val('announce_interval','5')}/></label>
+   {announcementFields.map(([key,label,fallback,kind])=><label key={key}>{label}{kind==='area'?<textarea name={key} rows={3} defaultValue={val(key,fallback)}/>:<input name={key} defaultValue={val(key,fallback)}/>}</label>)}
+   {accountFields.map(([key,label,fallback])=><label key={key}>{label}<input name={key} defaultValue={val(key,fallback)}/></label>)}
+  </div><button>Save announcement</button></form>
 }
 
 function SettingsGroup({group,saved,saveGroup}:{group:any;saved:Record<string,string>;saveGroup:(e:FormEvent<HTMLFormElement>)=>void}){
