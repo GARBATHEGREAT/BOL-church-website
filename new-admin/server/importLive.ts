@@ -17,7 +17,8 @@ export async function importLive(source = IMPORT_SOURCE) {
   if (!data || typeof data !== 'object' || !data.settings) throw new Error('The old site did not return site content.');
 
   const stmts = [
-    DB.prepare("DELETE FROM content_items WHERE section != 'announcement_slides'"),
+    DB.prepare('DELETE FROM content_items'),
+    DB.prepare("DELETE FROM settings WHERE key = 'announce_slides_initialized'"), // flyers are re-created fresh the next time the admin opens
     DB.prepare('DELETE FROM sermons'),
     DB.prepare('DELETE FROM events'),
     DB.prepare('DELETE FROM gallery_media')
@@ -31,7 +32,7 @@ export async function importLive(source = IMPORT_SOURCE) {
   for (const e of data.events || [])
     stmts.push(DB.prepare('INSERT OR REPLACE INTO events(id,title,event_date,event_time,location,description,image_url,published) VALUES(?,?,?,?,?,?,?,?)').bind(e.id, e.title, e.event_date, e.event_time, e.location || '', e.description || '', e.image_url || '', e.published ?? 1));
   for (const c of data.contentItems || [])
-    stmts.push(DB.prepare('INSERT OR REPLACE INTO content_items(id,section,title,subtitle,description,body,image_url,button_text,button_url,contact_links,sort_order,visible,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(c.id, c.section, c.title || '', c.subtitle || '', c.description || '', c.body || '', c.image_url || '', c.button_text || '', c.button_url || '', c.contact_links || '', c.sort_order ?? 0, c.visible ?? 1, c.created_at || now, c.updated_at || now));
+    stmts.push(DB.prepare('INSERT INTO content_items(section,title,subtitle,description,body,image_url,button_text,button_url,contact_links,sort_order,visible,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(c.section, c.title || '', c.subtitle || '', c.description || '', c.body || '', c.image_url || '', c.button_text || '', c.button_url || '', c.contact_links || '', c.sort_order ?? 0, c.visible ?? 1, c.created_at || now, c.updated_at || now));
   for (const g of data.galleryMedia || [])
     stmts.push(DB.prepare('INSERT OR REPLACE INTO gallery_media(id,media_type,url,storage_key,caption,sort_order,visible,created_at) VALUES(?,?,?,?,?,?,?,?)').bind(g.id, g.media_type, g.url, g.storage_key || '', g.caption || '', g.sort_order ?? 0, g.visible ?? 1, g.created_at || now));
   await DB.batch(stmts);
