@@ -53,5 +53,9 @@
       "source": "/media/:path*",
       "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/media/:path*"
     }
-  ]
+  ],
+  "framework": null,
+  "buildCommand": "echo static site",
+  "installCommand": "echo skip",
+  "outputDirectory": "public"
 }
