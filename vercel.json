@@ -14,8 +14,12 @@
       "destination": "/gallery.html"
     },
     {
+      "source": "/api/:path*",
+      "destination": "/api/server"
+    },
+    {
       "source": "/media/:path*",
-      "destination": "/api/media/:path*"
+      "destination": "/api/server"
     },
     {
       "source": "/admin",
@@ -27,11 +31,11 @@
     }
   ],
   "framework": null,
-  "buildCommand": "cd new-admin && npm ci && npm run build && cd .. && mkdir -p public/admin && cp -r new-admin/dist/. public/admin/",
-  "installCommand": "echo skip",
+  "buildCommand": "cd new-admin && npm ci && npm run build && npm run build:api && cd .. && mkdir -p public/admin && cp -r new-admin/dist/. public/admin/",
+  "installCommand": "npm install --no-audit --no-fund",
   "outputDirectory": "public",
   "functions": {
-    "api/**/*.ts": {
+    "api/server.js": {
       "maxDuration": 30
     }
   }

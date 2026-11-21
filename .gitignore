@@ -7,3 +7,4 @@ node_modules/
 
 # built admin app (generated at deploy time)
 public/admin/
+api/server.js
