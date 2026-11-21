@@ -90,13 +90,12 @@ function AnnouncementSettings({saved,saveGroup}:{saved:Record<string,string>;sav
 }
 
 function ImportPanel({reload}:{reload:()=>Promise<any>}){
- const[busy,setBusy]=useState(false),[msg,setMsg]=useState('');
+ const[busy,setBusy]=useState(false),[msg,setMsg]=useState(''),[armed,setArmed]=useState(false);
  async function run(){
-  if(!confirm('Copy the content and photos from the old website into this admin? This replaces the sermons, events, gallery and page sections currently stored here (announcement flyers and settings are kept).'))return;
-  setBusy(true);setMsg('');
+  setArmed(false);setBusy(true);setMsg('');
   try{const r=await fetch('/api/admin',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({action:'import_live'})});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Import failed.');const x=j.summary;setMsg(`Imported ${x.settings} settings, ${x.contentItems} page items, ${x.sermons} videos, ${x.events} events, ${x.gallery} gallery items. Photos copied: ${x.mediaCopied}${x.mediaFailed?` (failed: ${x.mediaFailed})`:''}.`);await reload()}catch(e:any){setMsg(e.message)}finally{setBusy(false)}
  }
- return <div className="panel" style={{marginTop:18}}><h2>Import from the old website</h2><p>One-time copy of your current website content and photos into this admin. Messages and extra admin logins cannot be copied.</p><button type="button" disabled={busy} onClick={run}>{busy?'Importing…':'Import from old website'}</button>{msg&&<p role="status" style={{marginTop:12}}>{msg}</p>}</div>
+ return <div className="panel" style={{marginTop:18}}><h2>Import from the old website</h2><p>One-time copy of your current website content and photos into this admin. Messages and extra admin logins cannot be copied.</p>{armed?<p role="alert"><b>This replaces the sermons, events, gallery and page sections stored here</b> (announcement flyers and settings are kept). <button type="button" disabled={busy} onClick={run}>Yes, import now</button> <button type="button" onClick={()=>setArmed(false)} style={{background:'#e5eae7',color:'#12313b'}}>Cancel</button></p>:<button type="button" disabled={busy} onClick={()=>{setMsg('');setArmed(true)}}>{busy?'Importing…':'Import from old website'}</button>}{msg&&<p role="status" style={{marginTop:12}}>{msg}</p>}</div>
 }
 
 function SettingsGroup({group,saved,saveGroup}:{group:any;saved:Record<string,string>;saveGroup:(e:FormEvent<HTMLFormElement>)=>void}){
