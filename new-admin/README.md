@@ -42,3 +42,6 @@ until you copy any you need.)
 5. In `vercel.json`: rewrite `/api/:path*` and `/media/:path*` to `/api/server`; build the admin
    (`cd new-admin && npm ci && npm run build`) into `public/admin/`; rewrite `/admin/:path*` to `/admin/index.html`.
 6. Run `npm run import:live` once against the production database, deploy a **preview**, test, then merge.
+
+## Changing server code
+`api/server.js` is the bundled server function Vercel runs. It is committed (Vercel only detects functions that exist in the repo before the build). After editing anything in `new-admin/server/`, run `npm run build:api` inside `new-admin` and commit the updated `api/server.js`.
