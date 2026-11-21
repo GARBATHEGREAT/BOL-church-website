@@ -33,10 +33,5 @@
   "framework": null,
   "buildCommand": "cd new-admin && npm ci && npm run build && npm run build:api && cd .. && mkdir -p public/admin && cp -r new-admin/dist/. public/admin/",
   "installCommand": "npm install --no-audit --no-fund",
-  "outputDirectory": "public",
-  "functions": {
-    "api/server.js": {
-      "maxDuration": 30
-    }
-  }
+  "outputDirectory": "public"
 }

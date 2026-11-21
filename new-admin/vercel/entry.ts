@@ -6,5 +6,8 @@ async function handle(request: Request) {
   return (await route(request)) ?? Response.json({ error: 'Not found' }, { status: 404 });
 }
 
+// Longer limit for the one-time import from the old site.
+export const config = { maxDuration: 30 };
+
 export const GET = handle;
 export const POST = handle;
