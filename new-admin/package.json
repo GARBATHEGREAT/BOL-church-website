@@ -2,9 +2,10 @@
   "name": "bol-church-admin",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "description": "Standalone admin and data API for the Bread of Life website (no ChatGPT platform dependency).",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev:api": "tsx --env-file=.env server/dev.ts",
     "dev:web": "vite",

@@ -23,7 +23,7 @@ const exact: Record<string, Module> = {
 
 export async function route(request: Request): Promise<Response | null> {
   const { pathname } = new URL(request.url);
-  const mod: Module | undefined = pathname.startsWith('/media/') ? (media as Module) : exact[pathname.replace(/\/$/, '')];
+  const mod: Module | undefined = (pathname.startsWith('/media/') || pathname.startsWith('/api/media/')) ? (media as Module) : exact[pathname.replace(/\/$/, '')];
   if (!mod) return null;
   const handler = mod[request.method as 'GET' | 'POST'];
   if (!handler) return new Response('Method not allowed', { status: 405 });

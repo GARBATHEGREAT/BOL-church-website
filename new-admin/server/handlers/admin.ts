@@ -1,6 +1,7 @@
 import{env}from'../env';
 import{ensureSchema}from'../db';
 import{ADMIN_EMAIL,hashPassword,isAdmin}from'../auth';
+import{importLive}from'../importLive';
 
 const SECTIONS=new Set(['hero_slides','word_slides','pastors','communities','visit_slides','stories','announcement_slides']);
 
@@ -28,7 +29,10 @@ export async function POST(req:Request){
  await ensureSchema();
  if(!await isAdmin(req.headers))return Response.json({error:'Your admin session has expired. Please sign in again.'},{status:403});
  const x=await req.json() as Record<string,any>,now=new Date().toISOString();
- if(x.action==='setting')await saveSetting(String(x.key),String(x.value),now);
+ if(x.action==='import_live'){
+  try{return Response.json({ok:true,summary:await importLive()})}catch(e:any){return Response.json({error:String(e?.message||'Import failed.')},{status:502})}
+ }
+ else if(x.action==='setting')await saveSetting(String(x.key),String(x.value),now);
  else if(x.action==='settings_bulk'){
   const values=x.values&&typeof x.values==='object'?x.values:{};
   for(const[key,value]of Object.entries(values))await saveSetting(key,String(value),now);

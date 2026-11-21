@@ -4,3 +4,6 @@ vendor/
 node_modules/
 .wrangler/
 .sites-runtime/
+
+# built admin app (generated at deploy time)
+public/admin/

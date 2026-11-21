@@ -14,48 +14,25 @@
       "destination": "/gallery.html"
     },
     {
+      "source": "/media/:path*",
+      "destination": "/api/media/:path*"
+    },
+    {
       "source": "/admin",
-      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/admin"
+      "destination": "/admin/index.html"
     },
     {
       "source": "/admin/:path*",
-      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/admin/:path*"
-    },
-    {
-      "source": "/api/admin",
-      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/api/admin"
-    },
-    {
-      "source": "/api/admin-login",
-      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/api/admin-login"
-    },
-    {
-      "source": "/api/admin-logout",
-      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/api/admin-logout"
-    },
-    {
-      "source": "/signin-with-chatgpt",
-      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/signin-with-chatgpt"
-    },
-    {
-      "source": "/signout-with-chatgpt",
-      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/signout-with-chatgpt"
-    },
-    {
-      "source": "/callback",
-      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/callback"
-    },
-    {
-      "source": "/api/admin/:path*",
-      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/api/admin/:path*"
-    },
-    {
-      "source": "/media/:path*",
-      "destination": "https://breadoflifedcm.gandjtechhub.chatgpt.site/media/:path*"
+      "destination": "/admin/index.html"
     }
   ],
   "framework": null,
-  "buildCommand": "echo static site",
+  "buildCommand": "cd new-admin && npm ci && npm run build && cd .. && mkdir -p public/admin && cp -r new-admin/dist/. public/admin/",
   "installCommand": "echo skip",
-  "outputDirectory": "public"
+  "outputDirectory": "public",
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
 }
